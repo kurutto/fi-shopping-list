@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  // directUrl = env("POSTGRES_URL_NON_POOLING")
+  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String?
+  email             String?   @unique
+  emailVerified     DateTime?
+  image             String?
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  accounts          Account[]
+  credential        Credential[]
+  userFridges       UserFridge[]
+  purchases         Purchase[]
+  shoppingLists     ShoppingList[]
+
+  @@map("users")
+}
+model Credential{
+  id                String @id @default(cuid()) @unique
+  userId            String? @map("user_id")
+  hashedPassword    String @map("hashed_password")
+  emailVerified     DateTime? @map("email_verified")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("credentials")
+}
+
+model Fridge{
+  id                String @id @default(cuid()) @unique
+  name              String
+  description       String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  userFridges       UserFridge[]
+  inventories       Inventory[]
+  purchases         Purchase[]
+  shoppingLists     ShoppingList[]
+
+  @@map("fridges")
+}
+
+model UserFridge {
+  userId            String  @map("user_id")
+  fridgeId          String  @map("fridge_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fridge Fridge @relation(fields: [fridgeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, fridgeId])
+  @@map("user_fridge")
+}
+
+model Inventory {
+  id                String @id @default(cuid()) @unique
+  fridgeId          String @map("fridge_id")
+  category          Int
+  name              String
+  kana              String
+  remaining         Int
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  fridge Fridge @relation(fields: [fridgeId], references: [id], onDelete: Cascade)
+
+  purchases         Purchase[]
+
+  @@map("inventories")
+}
+
+model Purchase{
+  id                String @id @default(cuid()) @unique
+  userId            String @map("user_id")
+  fridgeId          String @map("fridge_id")
+  inventoryId       String? @map("inventory_id")
+  name              String
+  category          Int
+  purchaseDate      DateTime @map("purchase_date")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fridge Fridge @relation(fields: [fridgeId], references: [id], onDelete: Cascade)
+  inventory Inventory? @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  @@map("purchases")
+}
+
+model ShoppingList{
+  id                String @id @default(cuid()) @unique
+  userId            String @map("user_id")
+  fridgeId          String @map("fridge_id")
+  name              String
+  amount            String?
+  dueDate           DateTime? @map("due_date")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fridge Fridge @relation(fields: [fridgeId], references: [id], onDelete: Cascade)
+
+  @@map("shopping_lists")
+}

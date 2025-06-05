@@ -1,0 +1,1 @@
+export const networkErrorMessage = "ネットワークエラーが発生しました";
