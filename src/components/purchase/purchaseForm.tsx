@@ -48,9 +48,10 @@ interface PurchaseFormProps {
 }
 
 const PurchaseForm = ({ userId, fridgeId }: PurchaseFormProps) => {
-  const { isAdded, inventories, addPurchase } = useAddPurchase(fridgeId);
+  const { inventories, addPurchase } = useAddPurchase(fridgeId);
   const [inventoryCheck, setInventoryCheck] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAdded, setIsAdded] = useState("");
 
   const {
     register,
@@ -67,7 +68,9 @@ const PurchaseForm = ({ userId, fridgeId }: PurchaseFormProps) => {
   });
   const onSubmit = async (values: formType) => {
     setIsSubmitting(true);
-    addPurchase(inventoryCheck, values, reset, userId);
+    addPurchase(inventoryCheck, values, userId);
+    setIsAdded(`${values.name}が追加されました`);
+    reset();
     setIsSubmitting(false);
   };
   return (

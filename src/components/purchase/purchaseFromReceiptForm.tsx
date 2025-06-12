@@ -17,6 +17,7 @@ import { RegisterItemType } from "@/components/purchase/registrationReceiptTable
 import Button from "../ui/button";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { useAddPurchase } from "./hooks/useAddPurchase";
+import Paragraph from "../ui/paragraph";
 
 interface PurchaseFromReceiptFormProps {
   userId: string;
@@ -33,6 +34,8 @@ const PurchaseFromReceiptForm = ({
   const { handleOpen } = useContext<ModalContextType>(ModalContext);
   const dateRef = useRef<HTMLInputElement>(null);
   const tableRowRefs = useRef<RegisterItemType[]>([]);
+  const [isAdded, setIsAdded] = useState("");
+
   const handleRegistration = async () => {
     let hasErr = false;
     const registerItems: (null | RegisterItemDataType)[] = [];
@@ -40,34 +43,36 @@ const PurchaseFromReceiptForm = ({
     //registrationReceiptTableRowにアクセスしてRegisterItem()を発動させる
     //forEachは非同期処理を待たないので使用しない
     for (const item of tableRowRefs.current) {
-      const func = await item.RegisterItem();
+      const result = await item.RegisterItem();
 
       //RegisterItem()を発動させた結果をregisterItemsに格納する
-      registerItems.push(func);
-      if (func === null) {
+      registerItems.push(result);
+      if (result === null) {
         hasErr = true;
       }
     }
-    console.log("registerItems",registerItems);
-    if (hasErr) {
-    } else {
+    if (!hasErr) {
       for (const item of registerItems) {
         if (item) {
           await addPurchase(
             item.addInventory,
             item.data,
-            () => undefined,
             userId,
-            (item.addInventory && item.inventoryRegistration === "1")
-              ? item.kana :""
+            item.addInventory && item.inventoryRegistration === "1"
+              ? item.kana
+              : ""
           );
         }
       }
-      handleOpen();
+      setIsAdded("購入品が登録されました");
+      setTimeout(() => {
+        handleOpen();
+      }, 1500);
     }
   };
   return (
     <>
+    {isAdded && <Paragraph>{isAdded}</Paragraph>}
       <Box variant="horizontally">
         <Label className="w-20 w-">購入日</Label>
         <Input type="date" id="date" ref={dateRef} />

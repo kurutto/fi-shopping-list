@@ -1,17 +1,13 @@
 import { getInventories } from "@/lib/inventory";
 import { InventoryType } from "@/types/types";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { formType } from "../purchaseForm";
 import { putData } from "@/lib/putData";
-import { useCreateDataFromModal } from "@/hooks/useCreateDataFromModal";
-import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { networkErrorMessage } from "@/constants/messages";
 import { postData } from "@/lib/postData";
 
 export const useAddPurchase = (fridgeId: string) => {
-  const { handleOpen } = useContext<ModalContextType>(ModalContext);
   const [inventories, setInventories] = useState<InventoryType[]>([]);
-  const { isAdded, createItem } = useCreateDataFromModal();
 
   useEffect(() => {
     const getData = async () => {
@@ -24,7 +20,6 @@ export const useAddPurchase = (fridgeId: string) => {
   const addPurchase = async (
     inventoryCheck: boolean,
     values: formType,
-    reset: () => void,
     userId: string,
     kana?:string,
   ) => {
@@ -62,7 +57,7 @@ export const useAddPurchase = (fridgeId: string) => {
     }
 
     //新規購入品をデータベースに格納する
-    createItem(
+    await postData(
       `/fridge/${fridgeId}/purchase`,
       {
         userId: userId,
@@ -71,12 +66,9 @@ export const useAddPurchase = (fridgeId: string) => {
         name: values.name,
         category: Number(values.category),
         date: new Date(values.date),
-      },
-      reset,
-      fridgeId,
-      handleOpen
+      }
     );
   };
 
-  return { isAdded, inventories, addPurchase };
+  return { inventories, addPurchase };
 };

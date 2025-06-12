@@ -8,14 +8,12 @@ import Paragraph from "@/components/ui/paragraph";
 import { useSession } from "next-auth/react";
 import { useContext, useRef } from "react";
 import { FaBagShopping } from "react-icons/fa6";
-import { RegisterItemType } from "@/components/purchase/registrationReceiptTableRow";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 
 const PurchasesRegistrationPage = () => {
   const { data: session } = useSession();
   const { handleItemOpen } = useContext<ModalContextType>(ModalContext);
   const inputRef = useRef<HTMLInputElement>(null);
-  const tableRowRefs = useRef<RegisterItemType[]>([]);
 
   if (!session || !session.user) {
     return <div>Loading...</div>;
@@ -40,11 +38,6 @@ const PurchasesRegistrationPage = () => {
 
   const handleClick = () => {
     inputRef.current?.click();
-  };
-  const handleRegistration = () => {
-    tableRowRefs.current.forEach((item) => {
-      item.RegisterItem();
-    });
   };
 
   return (

@@ -35,7 +35,7 @@ export const ModalContextProvider = ({
   const handleItemOpen = (
     itemNumber: number,
     inventoryItem?: InventoryType | null,
-    purchasesItems?: ReceiptDataType[] | null,
+    purchasesItems?: ReceiptDataType[] | null
   ) => {
     setItem(itemNumber);
     if (inventoryItem) {
@@ -43,7 +43,6 @@ export const ModalContextProvider = ({
     }
     if (purchasesItems) {
       setPurchases(purchasesItems);
-  console.log("purchasesだよ", purchasesItems);
     }
     setIsOpen((prev) => !prev);
   };
@@ -58,7 +57,14 @@ export const ModalContextProvider = ({
 
   return (
     <ModalContext.Provider
-      value={{ item, isOpen, inventory, purchases, handleItemOpen, handleOpen }}
+      value={{
+        item,
+        isOpen,
+        inventory,
+        purchases,
+        handleItemOpen,
+        handleOpen,
+      }}
     >
       {children}
     </ModalContext.Provider>
