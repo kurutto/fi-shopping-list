@@ -83,3 +83,9 @@ export interface DataType {
 export interface SessionUpdateDataType {
   [key: string]: string;
 }
+
+export interface ReceiptDataType {
+  name: string;
+  general_name: string;
+  category: number;
+}

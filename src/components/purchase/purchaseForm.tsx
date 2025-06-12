@@ -33,6 +33,10 @@ export const formSchema = (
             message: "必須項目です",
           })
         : z.string(),
+    inventoryName:z.union([
+        z.literal(""),
+        z.string()
+    ]),
     amount: z.coerce.number({ message: "半角整数で入力してください" }),
   });
 

@@ -10,7 +10,7 @@ import Label from "../ui/label";
 import Paragraph from "../ui/paragraph";
 import Select from "../ui/select";
 import { categories } from "@/constants/categories";
-import { InventoryType, KanaDataType } from "@/types/types";
+import { InventoryType } from "@/types/types";
 import { cn } from "@/lib/utils";
 import { getKana } from "@/lib/inventory";
 import { useContext, useState } from "react";
@@ -56,11 +56,7 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
 
   const onSubmit = async (values: formType) => {
     setIsSubmitting(true);
-    const kanaData = await getKana(fridgeId, values.name);
-    const kanaArr = kanaData.result.word.map((kanaObj: KanaDataType) =>
-      kanaObj.furigana ? kanaObj.furigana : kanaObj.surface
-    );
-    const kana = kanaArr.join("");
+    const kana = await getKana(fridgeId, values.name);
     if (inventory) {
       updateItem(
         `/fridge/${fridgeId}/inventory`,
@@ -87,7 +83,6 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
         },
         reset,
         fridgeId,
-        values.name,
         handleOpen
       );
     }

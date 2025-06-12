@@ -6,6 +6,7 @@ import { putData } from "@/lib/putData";
 import { useCreateDataFromModal } from "@/hooks/useCreateDataFromModal";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { networkErrorMessage } from "@/constants/messages";
+import { postData } from "@/lib/postData";
 
 export const useAddPurchase = (fridgeId: string) => {
   const { handleOpen } = useContext<ModalContextType>(ModalContext);
@@ -24,10 +25,24 @@ export const useAddPurchase = (fridgeId: string) => {
     inventoryCheck: boolean,
     values: formType,
     reset: () => void,
-    userId: string
+    userId: string,
+    kana?:string,
   ) => {
+    //新規に在庫管理品を登録する
+    if (inventoryCheck && values.inventoryName) {
+      try {
+        await postData(`/fridge/${fridgeId}/inventory`, {
+          fridgeId: fridgeId,
+          category: Number(values.category),
+          name: values.inventoryName,
+          kana: kana,
+          amount: values.amount,
+        });
+      } catch {
+        alert(networkErrorMessage);
+      }
     //選択された在庫管理品の数量を取得、入力値をプラスして合計を算出する
-    if (inventoryCheck && inventories.length > 0) {
+    }else if (inventoryCheck && !values.inventoryName && inventories.length > 0) {
       const targetInventory = inventories.filter(
         (inventory) => inventory.id === values.inventoryId
       );
@@ -59,7 +74,6 @@ export const useAddPurchase = (fridgeId: string) => {
       },
       reset,
       fridgeId,
-      values.name,
       handleOpen
     );
   };

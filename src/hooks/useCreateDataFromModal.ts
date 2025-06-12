@@ -13,7 +13,6 @@ export const useCreateDataFromModal = () => {
     data: DataType,
     reset: () => void,
     fridgeId: string,
-    postName: string,
     handleOpen: () => void
   ) => {
     try {
@@ -25,7 +24,7 @@ export const useCreateDataFromModal = () => {
         (pathname.split("member/")[1] &&
           pathname.split("member/")[1] !== fridgeId)
       ) {
-        setIsAdded(`${postName}が追加されました`);
+        setIsAdded(`${data.name}が追加されました`);
         setTimeout(() => {
           handleOpen();
         }, 1500);
