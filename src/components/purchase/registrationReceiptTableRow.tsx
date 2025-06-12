@@ -3,17 +3,28 @@ import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/select";
 import { ReceiptDataType } from "@/types/types";
-import { useRef, forwardRef, useImperativeHandle, useState, useContext } from "react";
+import { useRef, forwardRef, useImperativeHandle, useState } from "react";
 import { categories } from "@/constants/categories";
 import { useAddPurchase } from "./hooks/useAddPurchase";
 import { getKana } from "@/lib/inventory";
-import { ModalContext, ModalContextType } from "@/context/modalContext";
-
+import Paragraph from "../ui/paragraph";
+export interface RegisterItemDataType {
+  addInventory: boolean;
+  inventoryRegistration: string;
+  data: {
+    name: string;
+    category: string;
+    date: string;
+    inventoryId: string;
+    inventoryName: string;
+    amount: number;
+  };
+  kana: string;
+}
 export interface RegisterItemType {
-  RegisterItem: () => void;
+  RegisterItem: () => Promise<null | RegisterItemDataType>;
 }
 interface RegistrationReceiptTableRowType {
-  userId: string;
   fridgeId: string;
   item: ReceiptDataType;
   date?: string;
@@ -21,75 +32,83 @@ interface RegistrationReceiptTableRowType {
 const RegistrationReceiptTableRow = forwardRef<
   RegisterItemType,
   RegistrationReceiptTableRowType
->(({ userId, fridgeId, item, date }, ref) => {
-  const { inventories, addPurchase } = useAddPurchase(fridgeId);
-    const { handleOpen } = useContext<ModalContextType>(ModalContext);
+>(({ fridgeId, item, date }, ref) => {
+  const { inventories } = useAddPurchase(fridgeId);
   const [name, setName] = useState(item.name);
   const [category, setCategory] = useState(item.category.toString());
   const [retouching, setRetouching] = useState(false);
   const [addInventory, setAddInventory] = useState(false);
-  const [inventoryRegistration, setInventoryRegistration] = useState<string>();
+  const [inventoryRegistration, setInventoryRegistration] = useState("");
   const existingNameRef = useRef<HTMLSelectElement | null>(null);
   const existingAmountRef = useRef<HTMLInputElement | null>(null);
   const newNameRef = useRef<HTMLInputElement | null>(null);
   const newAmountRef = useRef<HTMLInputElement | null>(null);
+  const [nameErr, setNameErr] = useState("");
+  const [existingNameErr, setExistingNameErr] = useState("");
+  const [newNameErr, setNewNameErr] = useState("");
+
   const handleInventoryRegistration = (elem: HTMLInputElement) => {
     setInventoryRegistration(elem.value);
   };
+
   useImperativeHandle(ref, () => ({
     RegisterItem: async () => {
+      setNameErr("");
+      setExistingNameErr("");
+      setNewNameErr("");
+      let kana;
+      let hasErr = false;
+      const trimName = name.trim();
+      if (trimName === "") {
+        setNameErr("必須項目です");
+        hasErr = true;
+      }
       if (addInventory) {
         if (inventoryRegistration === "0") {
-          if (!existingNameRef.current?.value) {
-            return;
+          const trimInventoryName = existingNameRef.current?.value.trim();
+          if (trimInventoryName === "") {
+            setExistingNameErr("必須項目です");
+            hasErr = true;
           }
-          await addPurchase(
-            addInventory,
-            {
-              name: name,
-              category: category,
-              date: date ?? new Date().toISOString().split("T")[0],
-              inventoryId: existingNameRef.current.value,
-              inventoryName: "",
-              amount: Number(existingAmountRef.current?.value),
-            },
-            handleOpen,
-            userId
-          );
-        } else if (inventoryRegistration === "1") {
-          if (!newNameRef.current?.value) {
-            return;
-          }
-          const kana = await getKana(fridgeId, newNameRef.current.value);
-          await addPurchase(
-            addInventory,
-            {
-              name: name,
-              category:category,
-              date: date ?? new Date().toISOString().split("T")[0],
-              inventoryId: "",
-              inventoryName: newNameRef.current.value,
-              amount: Number(newAmountRef.current?.value),
-            },
-            handleOpen,
-            userId,
-            kana,
-          );
         }
+        if (inventoryRegistration === "1") {
+          if (newNameRef.current?.value) {
+            kana = await getKana(fridgeId, newNameRef.current.value);
+          }
+          const trimInventoryName = newNameRef.current?.value.trim();
+          if (trimInventoryName === "") {
+            setNewNameErr("必須項目です");
+            hasErr = true;
+          }
+        }
+      }
+      if (hasErr) {
+        return null;
       } else {
-        await addPurchase(
-          addInventory,
-          {
+        return {
+          addInventory: addInventory,
+          inventoryRegistration: inventoryRegistration,
+          data: {
             name: name,
             category: category,
-            date: date ?? new Date().toISOString().split("T")[0],
-            inventoryId: "",
-            inventoryName: "",
-            amount: 0,
+            date: date ? date : new Date().toISOString().split("T")[0],
+            inventoryId:
+              addInventory && inventoryRegistration === "0"
+                ? existingNameRef.current!.value
+                : "",
+            inventoryName:
+              addInventory && inventoryRegistration === "1"
+                ? newNameRef.current!.value
+                : "",
+            amount:
+              addInventory && inventoryRegistration === "0"
+                ? Number(existingAmountRef.current?.value)
+                : addInventory && inventoryRegistration === "1"
+                ? Number(newAmountRef.current?.value)
+                : 0,
           },
-          handleOpen,
-          userId
-        );
+          kana: kana,
+        };
       }
     },
   }));
@@ -108,6 +127,7 @@ const RegistrationReceiptTableRow = forwardRef<
           ) : (
             <>{name}</>
           )}
+          {nameErr && <Paragraph variant="error">{nameErr}</Paragraph>}
         </TableData>
         <TableData className="text-center">
           {retouching ? (
@@ -179,6 +199,9 @@ const RegistrationReceiptTableRow = forwardRef<
                       placeholder="追加数"
                       ref={existingAmountRef}
                     />
+                    {existingNameErr && (
+                      <Paragraph variant="error">{existingNameErr}</Paragraph>
+                    )}
                   </>
                 )}
               </div>
@@ -212,6 +235,9 @@ const RegistrationReceiptTableRow = forwardRef<
                       placeholder="追加数"
                       ref={newAmountRef}
                     />
+                    {newNameErr && (
+                      <Paragraph variant="error">{newNameErr}</Paragraph>
+                    )}
                   </>
                 )}
               </div>
