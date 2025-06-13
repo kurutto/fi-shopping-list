@@ -45,17 +45,24 @@ const RegistrationReceiptTableRow = forwardRef<
   const newAmountRef = useRef<HTMLInputElement | null>(null);
   const [nameErr, setNameErr] = useState("");
   const [existingNameErr, setExistingNameErr] = useState("");
+  const [existingAmountErr, setExistingAmountErr] = useState("");
   const [newNameErr, setNewNameErr] = useState("");
+  const [newAmountErr, setNewAmountErr] = useState("");
 
   const handleInventoryRegistration = (elem: HTMLInputElement) => {
     setInventoryRegistration(elem.value);
   };
 
+  const normalizeAndValidate = (input:string,elem:HTMLInputElement,errFunc:() => void) => {
+    const halfWidth = input.replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xfee0));
+    elem.value = halfWidth;
+    if (!/^\d+$/.test(halfWidth)) {
+      errFunc();
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     RegisterItem: async () => {
-      setNameErr("");
-      setExistingNameErr("");
-      setNewNameErr("");
       let kana;
       let hasErr = false;
       const trimName = name.trim();
@@ -70,6 +77,14 @@ const RegistrationReceiptTableRow = forwardRef<
             setExistingNameErr("必須項目です");
             hasErr = true;
           }
+          const trimInventoryAmount = existingAmountRef.current?.value.trim();
+          if(trimInventoryAmount){
+            const setErr = () =>{
+              setExistingAmountErr("数字以外の文字が含まれています");
+              hasErr = true;
+            }
+            normalizeAndValidate(trimInventoryAmount,existingAmountRef.current!,setErr);
+          }
         }
         if (inventoryRegistration === "1") {
           if (newNameRef.current?.value) {
@@ -80,6 +95,14 @@ const RegistrationReceiptTableRow = forwardRef<
             setNewNameErr("必須項目です");
             hasErr = true;
           }
+          const trimInventoryAmount = newAmountRef.current?.value.trim();
+          if(trimInventoryAmount){
+            const setErr = () =>{
+              setNewAmountErr("数字以外の文字が含まれています");
+              hasErr = true;
+            }
+            normalizeAndValidate(trimInventoryAmount,newAmountRef.current!,setErr);
+        }
         }
       }
       if (hasErr) {
@@ -200,7 +223,10 @@ const RegistrationReceiptTableRow = forwardRef<
                       ref={existingAmountRef}
                     />
                     {existingNameErr && (
-                      <Paragraph variant="error">{existingNameErr}</Paragraph>
+                      <Paragraph variant="error" className="w-full ml-4">{existingNameErr}</Paragraph>
+                    )}
+                    {existingAmountErr && (
+                      <Paragraph variant="error" className="w-full ml-4">{existingAmountErr}</Paragraph>
                     )}
                   </>
                 )}
@@ -237,6 +263,9 @@ const RegistrationReceiptTableRow = forwardRef<
                     />
                     {newNameErr && (
                       <Paragraph variant="error">{newNameErr}</Paragraph>
+                    )}
+                    {newAmountErr && (
+                      <Paragraph variant="error">{newAmountErr}</Paragraph>
                     )}
                   </>
                 )}

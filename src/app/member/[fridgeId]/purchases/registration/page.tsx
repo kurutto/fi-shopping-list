@@ -65,9 +65,8 @@ const PurchasesRegistrationPage = () => {
           <ul>
             {categories.map((category,idx) => (
               <li key={idx}>
-                <Label variant="check">
-                  <Input type="checkbox" className="mr-2" value={idx} checked={categoriesCheck[idx].checked} onChange={() => handleCategoryCheck(idx)} />{category}</Label>
-                </li>
+                <Label variant="check"><Input type="checkbox" className="mr-2" value={idx} checked={categoriesCheck[idx].checked} onChange={() => handleCategoryCheck(idx)} />{category}</Label>
+              </li>
             ))}
           </ul>
           <div className="flex justify-center">
