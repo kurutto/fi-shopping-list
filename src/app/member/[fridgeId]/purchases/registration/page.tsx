@@ -6,14 +6,16 @@ import Input from "@/components/ui/input";
 import Label from "@/components/ui/label";
 import Paragraph from "@/components/ui/paragraph";
 import { useSession } from "next-auth/react";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { FaBagShopping } from "react-icons/fa6";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
+import { categories } from "@/constants/categories";
 
 const PurchasesRegistrationPage = () => {
   const { data: session } = useSession();
   const { handleItemOpen } = useContext<ModalContextType>(ModalContext);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [categoriesCheck , setCategoriesCheck ] = useState(categories.map((category,idx) => ({id:idx,checked:true})));
 
   if (!session || !session.user) {
     return <div>Loading...</div>;
@@ -23,7 +25,8 @@ const PurchasesRegistrationPage = () => {
     if (image) {
       const formData = new FormData();
       formData.append("image", image[0]);
-      alert(session?.user.fridgeId);
+      const categoriesChecked = categoriesCheck.filter(categoryCheck => categoryCheck.checked === true).map(item => item.id)
+      formData.append("categories", JSON.stringify(categoriesChecked));
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/fridge/${session?.user.fridgeId}/purchase/read-photo/receipt`,
         {
@@ -40,6 +43,11 @@ const PurchasesRegistrationPage = () => {
     inputRef.current?.click();
   };
 
+  const handleCategoryCheck = (idx:number) => {
+    setCategoriesCheck(prev => prev.map((item,prevIdx) => (prevIdx === idx ? {...item,checked:!item.checked} : item)))
+
+  }
+
   return (
     <>
       <Heading level={1} icon={FaBagShopping}>
@@ -51,21 +59,12 @@ const PurchasesRegistrationPage = () => {
             レシート読取
           </Heading>
           <ul>
-            <li>
-              <Label variant="check">
-                <Input type="checkbox" /> 食品
-              </Label>
-            </li>
-            <li>
-              <Label variant="check">
-                <Input type="checkbox" /> 日用品
-              </Label>
-            </li>
-            <li>
-              <Label variant="check">
-                <Input type="checkbox" /> 非常用品
-              </Label>
-            </li>
+            {categories.map((category,idx) => (
+              <li key={idx}>
+                <Label variant="check">
+                  <Input type="checkbox" className="mr-2" value={idx} checked={categoriesCheck[idx].checked} onClick={() => handleCategoryCheck(idx)} />{category}</Label>
+                </li>
+            ))}
           </ul>
           <div className="flex justify-center">
             <input

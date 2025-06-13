@@ -8,10 +8,11 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   try {
-    console.log('a');
-    const image  = await req.formData();
-    const file = image.get("image") as Blob;
-    console.log('データだよ:',file);
+    const formData  = await req.formData();
+    const file = formData.get("image") as Blob;
+    const categories = formData.get("categories") as string;
+    const categoriesArr = JSON.parse(categories)
+
     if (!file) {
       return NextResponse.json({ error: "ファイルが見つかりません" }, { status: 400 });
     }
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
               type: "text",
               text: `画像から以下の情報を抽出してください。：
 - **商品名(よく知られている商品名を選択）**
-- **カテゴリ**（0:食品 / 1:日用品 / 2:非常用品)
+- **カテゴリ**（0:食品 / 1:日用品 / 2:非常用品)に分類し、カテゴリ番号が${categoriesArr}に含まれているものだけを出力
 - **一般名**（商品名が山田醤油なら一般名は「醤油」）
 
 ### **出力フォーマット**
