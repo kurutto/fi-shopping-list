@@ -1,13 +1,14 @@
-import { TableRow, TableData } from "@/components/ui/table";
+import { useRef, forwardRef, useImperativeHandle, useState } from "react";
+import { categories } from "@/constants/categories";
+import { getKana } from "@/lib/inventory";
+import { useAddPurchase } from "./hooks/useAddPurchase";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/select";
+import Paragraph from "@/components/ui/paragraph";
+import { TableRow, TableData } from "@/components/ui/table";
 import { ReceiptDataType } from "@/types/types";
-import { useRef, forwardRef, useImperativeHandle, useState } from "react";
-import { categories } from "@/constants/categories";
-import { useAddPurchase } from "./hooks/useAddPurchase";
-import { getKana } from "@/lib/inventory";
-import Paragraph from "../ui/paragraph";
+
 export interface RegisterItemDataType {
   addInventory: boolean;
   inventoryRegistration: string;
@@ -24,14 +25,14 @@ export interface RegisterItemDataType {
 export interface RegisterItemType {
   RegisterItem: () => Promise<null | RegisterItemDataType>;
 }
-interface RegistrationReceiptTableRowType {
+interface PurchaseFromReceiptTableRowType {
   fridgeId: string;
   item: ReceiptDataType;
   date?: string;
 }
-const RegistrationReceiptTableRow = forwardRef<
+const PurchaseFromReceiptTableRow = forwardRef<
   RegisterItemType,
-  RegistrationReceiptTableRowType
+  PurchaseFromReceiptTableRowType
 >(({ fridgeId, item, date }, ref) => {
   const { inventories } = useAddPurchase(fridgeId);
   const [name, setName] = useState(item.name);
@@ -49,22 +50,32 @@ const RegistrationReceiptTableRow = forwardRef<
   const [newNameErr, setNewNameErr] = useState("");
   const [newAmountErr, setNewAmountErr] = useState("");
 
+  //既存在庫から登録か
   const handleInventoryRegistration = (elem: HTMLInputElement) => {
     setInventoryRegistration(elem.value);
   };
 
-  const normalizeAndValidate = (input:string,elem:HTMLInputElement,errFunc:() => void) => {
-    const halfWidth = input.replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xfee0));
+  const normalizeAndValidate = (
+    input: string,
+    elem: HTMLInputElement,
+    errFunc: () => void
+  ) => {
+    const halfWidth = input.replace(/[０-９]/g, (ch) =>
+      String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
+    );
     elem.value = halfWidth;
     if (!/^\d+$/.test(halfWidth)) {
       errFunc();
     }
-  }
+  };
 
+  //RegisterItemをPurchaseFromReceiptFormから呼び出せるようにrefを使用
   useImperativeHandle(ref, () => ({
     RegisterItem: async () => {
       let kana;
       let hasErr = false;
+
+      //バリデーションチェック
       const trimName = name.trim();
       if (trimName === "") {
         setNameErr("必須項目です");
@@ -78,12 +89,16 @@ const RegistrationReceiptTableRow = forwardRef<
             hasErr = true;
           }
           const trimInventoryAmount = existingAmountRef.current?.value.trim();
-          if(trimInventoryAmount){
-            const setErr = () =>{
+          if (trimInventoryAmount) {
+            const setErr = () => {
               setExistingAmountErr("数字以外の文字が含まれています");
               hasErr = true;
-            }
-            normalizeAndValidate(trimInventoryAmount,existingAmountRef.current!,setErr);
+            };
+            normalizeAndValidate(
+              trimInventoryAmount,
+              existingAmountRef.current!,
+              setErr
+            );
           }
         }
         if (inventoryRegistration === "1") {
@@ -96,15 +111,21 @@ const RegistrationReceiptTableRow = forwardRef<
             hasErr = true;
           }
           const trimInventoryAmount = newAmountRef.current?.value.trim();
-          if(trimInventoryAmount){
-            const setErr = () =>{
+          if (trimInventoryAmount) {
+            const setErr = () => {
               setNewAmountErr("数字以外の文字が含まれています");
               hasErr = true;
-            }
-            normalizeAndValidate(trimInventoryAmount,newAmountRef.current!,setErr);
-        }
+            };
+            normalizeAndValidate(
+              trimInventoryAmount,
+              newAmountRef.current!,
+              setErr
+            );
+          }
         }
       }
+
+      //バリデーションで問題ない場合にデータを登録
       if (hasErr) {
         return null;
       } else {
@@ -196,7 +217,7 @@ const RegistrationReceiptTableRow = forwardRef<
                     type="radio"
                     name="inventoryRegistration"
                     value={0}
-                    onChange={(e) => handleInventoryRegistration(e.target)}
+                    onChange={(e) => setInventoryRegistration(e.target.value)}
                     className="mr-1"
                   />
                   既存の在庫品から選択
@@ -223,10 +244,14 @@ const RegistrationReceiptTableRow = forwardRef<
                       ref={existingAmountRef}
                     />
                     {existingNameErr && (
-                      <Paragraph variant="error" className="w-full ml-4">{existingNameErr}</Paragraph>
+                      <Paragraph variant="error" className="w-full ml-4">
+                        {existingNameErr}
+                      </Paragraph>
                     )}
                     {existingAmountErr && (
-                      <Paragraph variant="error" className="w-full ml-4">{existingAmountErr}</Paragraph>
+                      <Paragraph variant="error" className="w-full ml-4">
+                        {existingAmountErr}
+                      </Paragraph>
                     )}
                   </>
                 )}
@@ -241,7 +266,7 @@ const RegistrationReceiptTableRow = forwardRef<
                     type="radio"
                     name="inventoryRegistration"
                     value={1}
-                    onChange={(e) => handleInventoryRegistration(e.target)}
+                    onChange={(e) => setInventoryRegistration(e.target.value)}
                     className="mr-1"
                   />
                   新規に在庫品を登録
@@ -278,4 +303,4 @@ const RegistrationReceiptTableRow = forwardRef<
   );
 });
 
-export default RegistrationReceiptTableRow;
+export default PurchaseFromReceiptTableRow;

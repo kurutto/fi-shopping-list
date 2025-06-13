@@ -1,7 +1,13 @@
 import React, { useContext, useRef, useState } from "react";
+import { ReceiptDataType } from "@/types/types";
+import PurchaseFromReceiptTableRow, { RegisterItemDataType, RegisterItemType } from "@/components/purchase/purchaseFromReceiptTableRow";
+import { ModalContext, ModalContextType } from "@/context/modalContext";
+import { useAddPurchase } from "./hooks/useAddPurchase";
 import Box from "@/components/ui/box";
 import Label from "@/components/ui/label";
 import Input from "@/components/ui/input";
+import Button from "@/components/ui/button";
+import Paragraph from "@/components/ui/paragraph";
 import {
   Table,
   TableHead,
@@ -9,15 +15,6 @@ import {
   TableRow,
   TableHeader,
 } from "@/components/ui/table";
-import { ReceiptDataType } from "@/types/types";
-import RegistrationReceiptTableRow, {
-  RegisterItemDataType,
-} from "./registrationReceiptTableRow";
-import { RegisterItemType } from "@/components/purchase/registrationReceiptTableRow";
-import Button from "../ui/button";
-import { ModalContext, ModalContextType } from "@/context/modalContext";
-import { useAddPurchase } from "./hooks/useAddPurchase";
-import Paragraph from "../ui/paragraph";
 
 interface PurchaseFromReceiptFormProps {
   userId: string;
@@ -92,7 +89,7 @@ const PurchaseFromReceiptForm = ({
         </TableHead>
         <TableBody className="max-h-30">
           {purchases.map((item, idx) => (
-            <RegistrationReceiptTableRow
+            <PurchaseFromReceiptTableRow
               fridgeId={fridgeId}
               item={item}
               date={dateRef.current?.value}
