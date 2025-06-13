@@ -50,11 +50,6 @@ const PurchaseFromReceiptTableRow = forwardRef<
   const [newNameErr, setNewNameErr] = useState("");
   const [newAmountErr, setNewAmountErr] = useState("");
 
-  //既存在庫から登録か
-  const handleInventoryRegistration = (elem: HTMLInputElement) => {
-    setInventoryRegistration(elem.value);
-  };
-
   const normalizeAndValidate = (
     input: string,
     elem: HTMLInputElement,
@@ -69,7 +64,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
     }
   };
 
-  //RegisterItemをPurchaseFromReceiptFormから呼び出せるようにrefを使用
+  //RegisterItemを親コンポーネントのPurchaseFromReceiptFormから呼び出せるようにrefを使用
   useImperativeHandle(ref, () => ({
     RegisterItem: async () => {
       let kana;
@@ -125,8 +120,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
         }
       }
 
-      //バリデーションで問題ない場合にデータを登録
-      if (hasErr) {
+      if (!hasErr) {
         return null;
       } else {
         return {
