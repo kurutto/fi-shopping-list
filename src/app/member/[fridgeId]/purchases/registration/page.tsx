@@ -1,55 +1,17 @@
-"use client";
+import PurchaseFromReceipt from "@/components/purchase/purchaseFromReceipt";
 import Box from "@/components/ui/box";
 import Button from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
-import Input from "@/components/ui/input";
-import Label from "@/components/ui/label";
 import Paragraph from "@/components/ui/paragraph";
-import { useSession } from "next-auth/react";
-import { useContext, useRef, useState } from "react";
+import { nextAuthOptions } from "@/lib/next-auth/options";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { FaBagShopping } from "react-icons/fa6";
-import { ModalContext, ModalContextType } from "@/context/modalContext";
-import { categories } from "@/constants/categories";
 
-const PurchasesRegistrationPage = () => {
-  const { data: session } = useSession();
-  const { handleItemOpen } = useContext<ModalContextType>(ModalContext);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [categoriesCheck , setCategoriesCheck ] = useState(categories.map((category,idx) => ({id:idx,checked:true})));
-
-  if (!session || !session.user) {
-    return <div>Loading...</div>;
-  }
-  const handleChange = async () => {
-    const image = inputRef.current?.files;
-    if (image) {
-      const formData = new FormData();
-
-      //レシート画像
-      formData.append("image", image[0]);
-      //選択カテゴリ
-      const categoriesChecked = categoriesCheck.filter(categoryCheck => categoryCheck.checked === true).map(item => item.id)
-      formData.append("categories", JSON.stringify(categoriesChecked));
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/fridge/${session?.user.fridgeId}/purchase/read-photo/receipt`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const data = await res.json();
-      handleItemOpen(3, undefined, data.items);
-    }
-  };
-
-  const handleClick = () => {
-    inputRef.current?.click();
-  };
-
-  const handleCategoryCheck = (idx:number) => {
-    setCategoriesCheck(prev => prev.map((item,prevIdx) => (prevIdx === idx ? {...item,checked:!item.checked} : item)))
-
+const PurchasesRegistrationPage = async() => {
+  const session = await getServerSession(nextAuthOptions);
+  if (!session) {
+    redirect("/login");
   }
 
   return (
@@ -62,24 +24,7 @@ const PurchasesRegistrationPage = () => {
           <Heading level={2} className="justify-center">
             レシート読取
           </Heading>
-          <ul>
-            {categories.map((category,idx) => (
-              <li key={idx}>
-                <Label variant="check"><Input type="checkbox" className="mr-2" value={idx} checked={categoriesCheck[idx].checked} onChange={() => handleCategoryCheck(idx)} />{category}</Label>
-              </li>
-            ))}
-          </ul>
-          <div className="flex justify-center">
-            <input
-              type="file"
-              capture="environment"
-              accept="image/*"
-              onChange={handleChange}
-              ref={inputRef}
-              className="hidden"
-            />
-            <Button variant="photo" color="primary" onClick={handleClick} />
-          </div>
+          <PurchaseFromReceipt session={session} />
         </Box>
         <Box variant="rounded" className="flex-1 flex flex-col justify-between">
           <Heading level={2} className="justify-center">
