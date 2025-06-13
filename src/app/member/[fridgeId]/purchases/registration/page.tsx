@@ -24,9 +24,13 @@ const PurchasesRegistrationPage = () => {
     const image = inputRef.current?.files;
     if (image) {
       const formData = new FormData();
+
+      //レシート画像
       formData.append("image", image[0]);
+      //選択カテゴリ
       const categoriesChecked = categoriesCheck.filter(categoryCheck => categoryCheck.checked === true).map(item => item.id)
       formData.append("categories", JSON.stringify(categoriesChecked));
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/fridge/${session?.user.fridgeId}/purchase/read-photo/receipt`,
         {
@@ -62,7 +66,7 @@ const PurchasesRegistrationPage = () => {
             {categories.map((category,idx) => (
               <li key={idx}>
                 <Label variant="check">
-                  <Input type="checkbox" className="mr-2" value={idx} checked={categoriesCheck[idx].checked} onClick={() => handleCategoryCheck(idx)} />{category}</Label>
+                  <Input type="checkbox" className="mr-2" value={idx} checked={categoriesCheck[idx].checked} onChange={() => handleCategoryCheck(idx)} />{category}</Label>
                 </li>
             ))}
           </ul>
