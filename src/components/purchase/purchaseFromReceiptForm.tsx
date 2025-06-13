@@ -1,6 +1,9 @@
 import React, { useContext, useRef, useState } from "react";
 import { ReceiptDataType } from "@/types/types";
-import PurchaseFromReceiptTableRow, { RegisterItemDataType, RegisterItemType } from "@/components/purchase/purchaseFromReceiptTableRow";
+import PurchaseFromReceiptTableRow, {
+  RegisterItemDataType,
+  RegisterItemType,
+} from "@/components/purchase/purchaseFromReceiptTableRow";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { useAddPurchase } from "./hooks/useAddPurchase";
 import Box from "@/components/ui/box";
@@ -43,9 +46,11 @@ const PurchaseFromReceiptForm = ({
       const result = await item.RegisterItem();
 
       //RegisterItem()を発動させた結果をregisterItemsに格納する
-      registerItems.push(result);
-      if (result === null) {
-        hasErr = true;
+      if (result !== undefined) {
+        registerItems.push(result);
+        if (result === null) {
+          hasErr = true;
+        }
       }
     }
     if (!hasErr) {
@@ -69,7 +74,7 @@ const PurchaseFromReceiptForm = ({
   };
   return (
     <>
-    {isAdded && <Paragraph>{isAdded}</Paragraph>}
+      {isAdded && <Paragraph>{isAdded}</Paragraph>}
       <Box variant="horizontally">
         <Label className="w-20 w-">購入日</Label>
         <Input type="date" id="date" ref={dateRef} />

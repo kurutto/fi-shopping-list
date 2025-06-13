@@ -8,6 +8,7 @@ import Select from "@/components/ui/select";
 import Paragraph from "@/components/ui/paragraph";
 import { TableRow, TableData } from "@/components/ui/table";
 import { ReceiptDataType } from "@/types/types";
+import { cn } from "@/lib/utils";
 
 export interface RegisterItemDataType {
   addInventory: boolean;
@@ -23,7 +24,7 @@ export interface RegisterItemDataType {
   kana: string;
 }
 export interface RegisterItemType {
-  RegisterItem: () => Promise<null | RegisterItemDataType>;
+  RegisterItem: () => Promise<null | undefined | RegisterItemDataType>;
 }
 interface PurchaseFromReceiptTableRowType {
   fridgeId: string;
@@ -38,6 +39,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
   const [name, setName] = useState(item.name);
   const [category, setCategory] = useState(item.category.toString());
   const [retouching, setRetouching] = useState(false);
+  const [deleteItem , setDeleteItem] = useState(false)
   const [addInventory, setAddInventory] = useState(false);
   const [inventoryRegistration, setInventoryRegistration] = useState("");
   const existingNameRef = useRef<HTMLSelectElement | null>(null);
@@ -64,96 +66,99 @@ const PurchaseFromReceiptTableRow = forwardRef<
     }
   };
 
-  //RegisterItemを親コンポーネントのPurchaseFromReceiptFormから呼び出せるようにrefを使用
+  //RegisterItemを親コンポーネントのPurchaseFromReceiptFormから呼び出すためrefを使用
   useImperativeHandle(ref, () => ({
     RegisterItem: async () => {
-      let kana;
-      let hasErr = false;
+      if(deleteItem){
+        return undefined;
+      }else{
+        let kana;
+        let hasErr = false;
 
-      //バリデーションチェック
-      const trimName = name.trim();
-      if (trimName === "") {
-        setNameErr("必須項目です");
-        hasErr = true;
-      }
-      if (addInventory) {
-        if (inventoryRegistration === "0") {
-          const trimInventoryName = existingNameRef.current?.value.trim();
-          if (trimInventoryName === "") {
-            setExistingNameErr("必須項目です");
-            hasErr = true;
-          }
-          const trimInventoryAmount = existingAmountRef.current?.value.trim();
-          if (trimInventoryAmount) {
-            const setErr = () => {
-              setExistingAmountErr("数字以外の文字が含まれています");
+        //バリデーションチェック
+        const trimName = name.trim();
+        if (trimName === "") {
+          setNameErr("必須項目です");
+          hasErr = true;
+        }
+        if (addInventory) {
+          if (inventoryRegistration === "0") {
+            const trimInventoryName = existingNameRef.current?.value.trim();
+            if (trimInventoryName === "") {
+              setExistingNameErr("必須項目です");
               hasErr = true;
-            };
-            normalizeAndValidate(
-              trimInventoryAmount,
-              existingAmountRef.current!,
-              setErr
-            );
+            }
+            const trimInventoryAmount = existingAmountRef.current?.value.trim();
+            if (trimInventoryAmount) {
+              const setErr = () => {
+                setExistingAmountErr("数字以外の文字が含まれています");
+                hasErr = true;
+              };
+              normalizeAndValidate(
+                trimInventoryAmount,
+                existingAmountRef.current!,
+                setErr
+              );
+            }
+          }
+          if (inventoryRegistration === "1") {
+            if (newNameRef.current?.value) {
+              kana = await getKana(fridgeId, newNameRef.current.value);
+            }
+            const trimInventoryName = newNameRef.current?.value.trim();
+            if (trimInventoryName === "") {
+              setNewNameErr("必須項目です");
+              hasErr = true;
+            }
+            const trimInventoryAmount = newAmountRef.current?.value.trim();
+            if (trimInventoryAmount) {
+              const setErr = () => {
+                setNewAmountErr("数字以外の文字が含まれています");
+                hasErr = true;
+              };
+              normalizeAndValidate(
+                trimInventoryAmount,
+                newAmountRef.current!,
+                setErr
+              );
+            }
           }
         }
-        if (inventoryRegistration === "1") {
-          if (newNameRef.current?.value) {
-            kana = await getKana(fridgeId, newNameRef.current.value);
-          }
-          const trimInventoryName = newNameRef.current?.value.trim();
-          if (trimInventoryName === "") {
-            setNewNameErr("必須項目です");
-            hasErr = true;
-          }
-          const trimInventoryAmount = newAmountRef.current?.value.trim();
-          if (trimInventoryAmount) {
-            const setErr = () => {
-              setNewAmountErr("数字以外の文字が含まれています");
-              hasErr = true;
-            };
-            normalizeAndValidate(
-              trimInventoryAmount,
-              newAmountRef.current!,
-              setErr
-            );
-          }
-        }
-      }
 
-      if (!hasErr) {
-        return null;
-      } else {
-        return {
-          addInventory: addInventory,
-          inventoryRegistration: inventoryRegistration,
-          data: {
-            name: name,
-            category: category,
-            date: date ? date : new Date().toISOString().split("T")[0],
-            inventoryId:
-              addInventory && inventoryRegistration === "0"
-                ? existingNameRef.current!.value
-                : "",
-            inventoryName:
-              addInventory && inventoryRegistration === "1"
-                ? newNameRef.current!.value
-                : "",
-            amount:
-              addInventory && inventoryRegistration === "0"
-                ? Number(existingAmountRef.current?.value)
-                : addInventory && inventoryRegistration === "1"
-                ? Number(newAmountRef.current?.value)
-                : 0,
-          },
-          kana: kana,
-        };
-      }
-    },
+        if (hasErr) {
+          return null;
+        } else {
+          return {
+            addInventory: addInventory,
+            inventoryRegistration: inventoryRegistration,
+            data: {
+              name: name,
+              category: category,
+              date: date ? date : new Date().toISOString().split("T")[0],
+              inventoryId:
+                addInventory && inventoryRegistration === "0"
+                  ? existingNameRef.current!.value
+                  : "",
+              inventoryName:
+                addInventory && inventoryRegistration === "1"
+                  ? newNameRef.current!.value
+                  : "",
+              amount:
+                addInventory && inventoryRegistration === "0"
+                  ? Number(existingAmountRef.current?.value)
+                  : addInventory && inventoryRegistration === "1"
+                  ? Number(newAmountRef.current?.value)
+                  : 0,
+            },
+            kana: kana,
+          };
+        }
+      }}
   }));
 
   return (
     <>
-      <TableRow>
+      <TableRow className={cn(deleteItem && "opacity-10")}>
         <TableData>
           {retouching ? (
             <Input
@@ -190,15 +195,24 @@ const PurchaseFromReceiptTableRow = forwardRef<
             onChange={() => setAddInventory((prev) => !prev)}
           />
         </TableData>
-        <TableData className="text-center">
+        <TableData className="text-center max-md:px-0">
+          {!retouching ? 
+            <div className="flex">
+            <Button
+              variant="edit"
+              size="small"
+              onClick={() => setRetouching((prev) => !prev)}
+            /><Button
+              variant="delete"
+              size="small"
+              onClick={() => setDeleteItem((prev) => !prev)}
+            /></div>:
           <Button
             size="small"
             color="secondary"
-            className="w-11"
+            className="w-11 mx-auto"
             onClick={() => setRetouching((prev) => !prev)}
-          >
-            {retouching ? "保存" : "修正"}
-          </Button>
+          >保存</Button>}
         </TableData>
       </TableRow>
       {addInventory && (
@@ -214,7 +228,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
                     onChange={(e) => setInventoryRegistration(e.target.value)}
                     className="mr-1"
                   />
-                  既存の在庫品から選択
+                  既存の在庫品に登録
                 </label>
                 {inventoryRegistration === "0" && (
                   <>

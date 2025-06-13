@@ -3,6 +3,7 @@ import { tv } from "tailwind-variants";
 import {
   FaCirclePlus,
   FaXmark,
+  FaPencil,
   FaCamera,
   FaArrowDown,
   FaArrowUp,
@@ -11,7 +12,7 @@ import React from "react";
 
 interface ButtonProps
   extends Omit<React.ComponentPropsWithRef<"button">, "className"> {
-  variant?: "base" | "add" | "delete" | "photo" | "angle" | "text";
+  variant?: "base" | "add" | "delete" | "edit" | "photo" | "angle" | "text";
   angle?: "up" | "down";
   color?: "primary" | "secondary" | "outline" | "destructive";
   size?: "base" | "small";
@@ -30,6 +31,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           base: " flex justify-center items-center gap-2 text-base",
           add: "",
           delete: "leading-none",
+          edit: "leading-none",
           photo: "rounded-full flex items-center justify-center",
           angle: "",
           text: "md:hover:underline md:hover:underline-offset-4 max-md:underline max-md:underline-offset-4",
@@ -50,7 +52,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           base: cn(
             variant === "base" && "p-2.5 rounded-lg ",
             variant === "add" && "md:text-[40px] max-md:text-4xl",
-            variant === "delete" && "p-3",
+            (variant === "delete" || variant === "edit") && "p-3",
             variant === "photo" && "w-14 h-14 text-2xl",
             variant === "angle" && "text-sm"
           ),
@@ -58,7 +60,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             variant === "base" &&
               "md:p-2 md:rounded-lg max-md:p-1.5 max-md:rounded-md max-md:text-sm",
             variant === "add" &&
-              "text-xl align-middle px-1 -mt-1 cursor-default hover:opacity-100"
+              "text-xl align-middle px-1 -mt-1 cursor-default hover:opacity-100",
+            (variant === "delete" || variant === "edit") && "p-2",
           ),
         },
       },
@@ -88,6 +91,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <FaCirclePlus />
         ) : variant === "delete" ? (
           <FaXmark />
+        ) : variant === "edit" ? (
+          <FaPencil />
         ) : variant === "photo" ? (
           <FaCamera />
         ) : variant === "angle" && angle === "up" ? (
