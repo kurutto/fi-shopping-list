@@ -75,6 +75,7 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
       createItem(
         `/fridge/${fridgeId}/inventory`,
         {
+          inventoryId:null,
           fridgeId: fridgeId,
           category: Number(values.category),
           name: values.name,

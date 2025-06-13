@@ -5,6 +5,7 @@ import { formType } from "../purchaseForm";
 import { putData } from "@/lib/putData";
 import { networkErrorMessage } from "@/constants/messages";
 import { postData } from "@/lib/postData";
+import { createId } from '@paralleldrive/cuid2';
 
 export const useAddPurchase = (fridgeId: string) => {
   const [inventories, setInventories] = useState<InventoryType[]>([]);
@@ -24,9 +25,11 @@ export const useAddPurchase = (fridgeId: string) => {
     kana?:string,
   ) => {
     //新規に在庫管理品を登録する
+    let inventoryId = createId();
     if (inventoryCheck && values.inventoryName) {
       try {
         await postData(`/fridge/${fridgeId}/inventory`, {
+          inventoryId:inventoryId,
           fridgeId: fridgeId,
           category: Number(values.category),
           name: values.inventoryName,
@@ -62,7 +65,7 @@ export const useAddPurchase = (fridgeId: string) => {
       {
         userId: userId,
         fridgeId: fridgeId,
-        inventoryId: inventoryCheck && inventories.length > 0 ? values.inventoryId : null,
+        inventoryId: inventoryCheck && !values.inventoryName && inventories.length > 0 ? values.inventoryId : inventoryCheck && values.inventoryName ? inventoryId : null,
         name: values.name,
         category: Number(values.category),
         date: new Date(values.date),
