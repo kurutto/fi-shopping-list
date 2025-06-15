@@ -28,7 +28,7 @@ const Modal = ({
     isOpen ? "visible opacity-100" : "invisible opacity-0"
   );
   const boxStyle = cn(
-    "absolute transition-opacity max-h-[calc(100vh-2rem)] overscroll-contain overflow-y-auto -mx-4 max-w-9/10 z-55 my-1",
+    "absolute transition-opacity max-h-[calc(100vh-2rem)] overscroll-contain overflow-y-auto -mx-4 max-w-14/15 z-55 my-1",
     boxW,
     isOpen ? "visible opacity-100" : "invisible opacity-0"
   );

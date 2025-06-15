@@ -75,15 +75,11 @@ const PurchaseFromReceiptForm = ({
   return (
     <>
       {isAdded && <Paragraph>{isAdded}</Paragraph>}
-      <Box variant="horizontally">
-        <Label className="w-20 w-">購入日</Label>
-        <Input type="date" id="date" ref={dateRef} />
-      </Box>
       <Table>
         <TableHead>
           <TableRow>
             <TableHeader className="text-left">品名</TableHeader>
-            <TableHeader className="w-20">カテゴリ</TableHeader>
+            <TableHeader className="w-20 whitespace-nowrap">カテゴリ</TableHeader>
             <TableHeader className="w-11 text-nowrap">
               在庫
               <br />
@@ -106,7 +102,18 @@ const PurchaseFromReceiptForm = ({
           ))}
         </TableBody>
       </Table>
-      <Button color="primary" onClick={handleRegistration}>
+      <Box variant="horizontally">
+        <Label className="w-15">購入日</Label>
+        <Input type="date" id="date" ref={dateRef} />
+        <Paragraph color="gray" className="w-full text-xs mt-1">
+          * 未入力の場合は本日の日付が登録されます
+        </Paragraph>
+      </Box>
+      <Button
+        color="primary"
+        onClick={handleRegistration}
+        className="w-25 mx-auto"
+      >
         登録
       </Button>
     </>

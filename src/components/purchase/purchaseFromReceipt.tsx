@@ -48,7 +48,7 @@ const PurchaseFromReceipt = ({session}:PurchaseFromReceiptType) => {
   }
   return (
     <>
-      <ul>
+      <ul className='sm:flex sm:gap-4 sm:justify-center'>
         {categories.map((category,idx) => (
           <li key={idx}>
             <Label variant="check"><Input type="checkbox" className="mr-2" value={idx} checked={categoriesCheck[idx].checked} onChange={() => handleCategoryCheck(idx)} />{category}</Label>
