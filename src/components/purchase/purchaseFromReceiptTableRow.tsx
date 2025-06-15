@@ -41,7 +41,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
   const [retouching, setRetouching] = useState(false);
   const [deleteItem , setDeleteItem] = useState(false)
   const [addInventory, setAddInventory] = useState(false);
-  const [inventoryRegistration, setInventoryRegistration] = useState("");
+  const [inventoryRegistration, setInventoryRegistration] = useState("")
   const existingNameRef = useRef<HTMLSelectElement | null>(null);
   const existingAmountRef = useRef<HTMLInputElement | null>(null);
   const newNameRef = useRef<HTMLInputElement | null>(null);
@@ -52,6 +52,13 @@ const PurchaseFromReceiptTableRow = forwardRef<
   const [newNameErr, setNewNameErr] = useState("");
   const [newAmountErr, setNewAmountErr] = useState("");
 
+  const handleAddInventory = () => {
+    if(addInventory){
+      setInventoryRegistration("");
+    }
+    setAddInventory((prev) => !prev);
+
+  }
   const normalizeAndValidate = (
     input: string,
     elem: HTMLInputElement,
@@ -158,7 +165,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
 
   return (
     <>
-      <TableRow className={cn(deleteItem && "opacity-10")}>
+      <TableRow className={cn(deleteItem && "opacity-10",addInventory && "border-b-0!")}>
         <TableData>
           {retouching ? (
             <Input
@@ -192,7 +199,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
         <TableData className="text-center">
           <Input
             type="checkbox"
-            onChange={() => setAddInventory((prev) => !prev)}
+            onChange={handleAddInventory}
           />
         </TableData>
         <TableData className="text-center max-md:px-0">
@@ -217,8 +224,8 @@ const PurchaseFromReceiptTableRow = forwardRef<
       </TableRow>
       {addInventory && (
         <>
-          <TableRow>
-            <TableData colSpan={4}>
+          <TableRow className="border-b-0!">
+            <TableData colSpan={4} className="pt-0!">
               <div className="flex w-full flex-wrap">
                 <label className="w-full mb-1 ml-2 block">
                   <Input
@@ -267,7 +274,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
             </TableData>
           </TableRow>
           <TableRow>
-            <TableData colSpan={4}>
+            <TableData colSpan={4} className="pt-0!">
               <div className="flex w-full flex-wrap">
                 <label className="w-full mb-1 ml-2">
                   <Input
