@@ -18,6 +18,7 @@ import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { useDeleteDataFromModal } from "@/hooks/useDeleteDataFromModal";
 import { useUpdateDataFromModal } from "@/hooks/useUpdateDataFromModal";
 import { useCreateDataFromModal } from "@/hooks/useCreateDataFromModal";
+import { createId } from '@paralleldrive/cuid2';
 
 const formSchema = z.object({
   category: z.coerce.number(),
@@ -75,7 +76,7 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
       createItem(
         `/fridge/${fridgeId}/inventory`,
         {
-          inventoryId:null,
+          inventoryId:createId(),
           fridgeId: fridgeId,
           category: Number(values.category),
           name: values.name,
