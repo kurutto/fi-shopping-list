@@ -1,14 +1,13 @@
 import { useRef, forwardRef, useImperativeHandle, useState } from "react";
 import { categories } from "@/constants/categories";
-import { getKana } from "@/lib/inventory";
-import { useAddPurchase } from "./hooks/useAddPurchase";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/select";
 import Paragraph from "@/components/ui/paragraph";
 import { TableRow, TableData } from "@/components/ui/table";
-import { ReceiptDataType } from "@/types/types";
+import { InventoryType, PurchaseItemDataType } from "@/types/types";
 import { cn } from "@/lib/utils";
+import { useRegisterItemValidation } from "./hooks/useRegisterItemValidation";
 
 export interface RegisterItemDataType {
   addInventory: boolean;
@@ -28,109 +27,54 @@ export interface RegisterItemType {
 }
 interface PurchaseFromReceiptTableRowType {
   fridgeId: string;
-  item: ReceiptDataType;
+  item: PurchaseItemDataType;
   date?: string;
+  inventories:InventoryType[];
 }
 const PurchaseFromReceiptTableRow = forwardRef<
   RegisterItemType,
   PurchaseFromReceiptTableRowType
->(({ fridgeId, item, date }, ref) => {
-  const { inventories } = useAddPurchase(fridgeId);
+>(({ fridgeId, item, date, inventories }, ref) => {
   const [name, setName] = useState(item.name);
   const [category, setCategory] = useState(item.category.toString());
   const [retouching, setRetouching] = useState(false);
   const [deleteItem , setDeleteItem] = useState(false)
   const [addInventory, setAddInventory] = useState(false);
-  const [inventoryRegistration, setInventoryRegistration] = useState("")
+  const [inventoryRegistration, setInventoryRegistration] = useState("");
   const existingNameRef = useRef<HTMLSelectElement | null>(null);
   const existingAmountRef = useRef<HTMLInputElement | null>(null);
   const newNameRef = useRef<HTMLInputElement | null>(null);
   const newAmountRef = useRef<HTMLInputElement | null>(null);
-  const [nameErr, setNameErr] = useState("");
-  const [existingNameErr, setExistingNameErr] = useState("");
-  const [existingAmountErr, setExistingAmountErr] = useState("");
-  const [newNameErr, setNewNameErr] = useState("");
-  const [newAmountErr, setNewAmountErr] = useState("");
+  const {registerItemValidation,nameErr,existingNameErr,existingAmountErr,newNameErr,newAmountErr} = useRegisterItemValidation(fridgeId,name,addInventory,inventoryRegistration,existingNameRef,existingAmountRef,newNameRef,newAmountRef);
 
   const handleAddInventory = () => {
-    if(addInventory){
+    if (addInventory) {
+      [existingNameRef, existingAmountRef, newNameRef, newAmountRef].forEach(
+        (ref) => {
+          if (ref.current) ref.current.value = "";
+        }
+      );
       setInventoryRegistration("");
     }
     setAddInventory((prev) => !prev);
-
-  }
-  const normalizeAndValidate = (
-    input: string,
-    elem: HTMLInputElement,
-    errFunc: () => void
-  ) => {
-    const halfWidth = input.replace(/[０-９]/g, (ch) =>
-      String.fromCharCode(ch.charCodeAt(0) - 0xfee0)
-    );
-    elem.value = halfWidth;
-    if (!/^\d+$/.test(halfWidth)) {
-      errFunc();
-    }
   };
 
+  const handleInventoryRegistration = (value: string) => {
+    [existingNameRef, existingAmountRef, newNameRef, newAmountRef].forEach(
+      (ref) => {
+        if (ref.current) ref.current.value = "";
+      }
+    );
+    setInventoryRegistration(value);
+  };
+  
   //RegisterItemを親コンポーネントのPurchaseFromReceiptFormから呼び出すためrefを使用
   useImperativeHandle(ref, () => ({
     RegisterItem: async () => {
       if(deleteItem){
         return undefined;
       }else{
-        let kana;
-        let hasErr = false;
-
-        //バリデーションチェック
-        const trimName = name.trim();
-        if (trimName === "") {
-          setNameErr("必須項目です");
-          hasErr = true;
-        }
-        if (addInventory) {
-          if (inventoryRegistration === "0") {
-            const trimInventoryName = existingNameRef.current?.value.trim();
-            if (trimInventoryName === "") {
-              setExistingNameErr("必須項目です");
-              hasErr = true;
-            }
-            const trimInventoryAmount = existingAmountRef.current?.value.trim();
-            if (trimInventoryAmount) {
-              const setErr = () => {
-                setExistingAmountErr("数字以外の文字が含まれています");
-                hasErr = true;
-              };
-              normalizeAndValidate(
-                trimInventoryAmount,
-                existingAmountRef.current!,
-                setErr
-              );
-            }
-          }
-          if (inventoryRegistration === "1") {
-            if (newNameRef.current?.value) {
-              kana = await getKana(fridgeId, newNameRef.current.value);
-            }
-            const trimInventoryName = newNameRef.current?.value.trim();
-            if (trimInventoryName === "") {
-              setNewNameErr("必須項目です");
-              hasErr = true;
-            }
-            const trimInventoryAmount = newAmountRef.current?.value.trim();
-            if (trimInventoryAmount) {
-              const setErr = () => {
-                setNewAmountErr("数字以外の文字が含まれています");
-                hasErr = true;
-              };
-              normalizeAndValidate(
-                trimInventoryAmount,
-                newAmountRef.current!,
-                setErr
-              );
-            }
-          }
-        }
+        const {kana, hasErr} = await registerItemValidation();
 
         if (hasErr) {
           return null;
@@ -232,7 +176,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
                     type="radio"
                     name="inventoryRegistration"
                     value={0}
-                    onChange={(e) => setInventoryRegistration(e.target.value)}
+                    onChange={(e) => handleInventoryRegistration(e.target.value)}
                     className="mr-1"
                   />
                   既存の在庫品に登録
@@ -281,7 +225,7 @@ const PurchaseFromReceiptTableRow = forwardRef<
                     type="radio"
                     name="inventoryRegistration"
                     value={1}
-                    onChange={(e) => setInventoryRegistration(e.target.value)}
+                    onChange={(e) => handleInventoryRegistration(e.target.value)}
                     className="mr-1"
                   />
                   新規に在庫品を登録

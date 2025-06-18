@@ -1,11 +1,10 @@
 import { getInventories } from "@/lib/inventory";
-import { InventoryType } from "@/types/types";
+import { InventoryType, RegisterItemDataType } from "@/types/types";
 import { useEffect, useState } from "react";
-import { formType } from "../purchaseForm";
 import { putData } from "@/lib/putData";
 import { networkErrorMessage } from "@/constants/messages";
 import { postData } from "@/lib/postData";
-import { createId } from '@paralleldrive/cuid2';
+import { createId } from "@paralleldrive/cuid2";
 
 export const useAddPurchase = (fridgeId: string) => {
   const [inventories, setInventories] = useState<InventoryType[]>([]);
@@ -20,16 +19,16 @@ export const useAddPurchase = (fridgeId: string) => {
 
   const addPurchase = async (
     inventoryCheck: boolean,
-    values: formType,
+    values: RegisterItemDataType,
     userId: string,
-    kana?:string,
+    kana?: string
   ) => {
     //新規に在庫管理品を登録する
     let inventoryId = createId();
     if (inventoryCheck && values.inventoryName) {
       try {
         await postData(`/fridge/${fridgeId}/inventory`, {
-          inventoryId:inventoryId,
+          inventoryId: inventoryId,
           fridgeId: fridgeId,
           category: Number(values.category),
           name: values.inventoryName,
@@ -39,8 +38,12 @@ export const useAddPurchase = (fridgeId: string) => {
       } catch {
         alert(networkErrorMessage);
       }
-    //選択された在庫管理品の数量を取得、入力値をプラスして合計を算出する
-    }else if (inventoryCheck && !values.inventoryName && inventories.length > 0) {
+      //選択された在庫管理品の数量を取得、入力値をプラスして合計を算出する
+    } else if (
+      inventoryCheck &&
+      !values.inventoryName &&
+      inventories.length > 0
+    ) {
       const targetInventory = inventories.filter(
         (inventory) => inventory.id === values.inventoryId
       );
@@ -60,17 +63,23 @@ export const useAddPurchase = (fridgeId: string) => {
     }
 
     //新規購入品をデータベースに格納する
-    await postData(
-      `/fridge/${fridgeId}/purchase`,
-      {
+    try {
+      await postData(`/fridge/${fridgeId}/purchase`, {
         userId: userId,
         fridgeId: fridgeId,
-        inventoryId: inventoryCheck && !values.inventoryName && inventories.length > 0 ? values.inventoryId : inventoryCheck && values.inventoryName ? inventoryId : null,
+        inventoryId:
+          inventoryCheck && !values.inventoryName && inventories.length > 0
+            ? values.inventoryId
+            : inventoryCheck && values.inventoryName
+            ? inventoryId
+            : null,
         name: values.name,
         category: Number(values.category),
         date: new Date(values.date),
-      }
-    );
+      });
+    } catch {
+      alert(networkErrorMessage);
+    }
   };
 
   return { inventories, addPurchase };

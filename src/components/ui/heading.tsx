@@ -5,6 +5,7 @@ interface headingProps
   level?: 1 | 2 | 3 |4;
   icon?: React.ElementType;
   outline?: boolean;
+  spBgWhite?:boolean;
   children: React.ReactNode;
   className?: string;
 }
@@ -12,6 +13,7 @@ const Heading = ({
   level = 3,
   icon: Icon,
   outline = false,
+  spBgWhite = false,
   children,
   className,
   ...props
@@ -24,7 +26,9 @@ const Heading = ({
       cn(
         "flex items-center font-bold md:text-xl md:gap-4 max-md:text-lg max-md:gap-2.5",
         outline &&
-          "bg-white rounded-2xl md:py-5 md:px-7 md:shadow-pc max-md:py-3.5 max-md:px-3.5 max-md:shadow-sp"
+          "bg-white rounded-2xl md:py-5 md:px-7 max-md:py-3.5 max-md:px-3.5",
+        outline && (spBgWhite ? "shadow" : " md:shadow-pc max-md:shadow-sp"),
+
       ),
     level === 3 && "font-bold md:text-lg max-md:text-base",
     level === 4 && "font-bold text-base"

@@ -84,8 +84,18 @@ export interface SessionUpdateDataType {
   [key: string]: string;
 }
 
-export interface ReceiptDataType {
+export interface PurchaseItemDataType {
   name: string;
   general_name: string;
   category: number;
+}
+
+
+export interface RegisterItemDataType {
+    name: string;
+    category: string;
+    date: string;
+    inventoryId: string;
+    inventoryName: string;
+    amount: number;
 }
