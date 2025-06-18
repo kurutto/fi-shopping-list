@@ -120,7 +120,7 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
       {isAdded && <Paragraph className="text-center">{isAdded}</Paragraph>}
       <Box variant="spaceY">
         <Box variant="horizontally">
-          <Label htmlFor="name" className="w-20">
+          <Label className="w-20">
             品名<span className="text-destructive pl-0.5">*</span>
           </Label>
           <div className="flex-1">
@@ -139,7 +139,7 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
           </div>
         </Box>
         <Box variant="horizontally">
-          <Label htmlFor="category" className="w-20">
+          <Label className="w-20">
             カテゴリ<span className="text-destructive pl-0.5">*</span>
           </Label>
           <div className="sm:flex-1">
@@ -164,7 +164,7 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
           </div>
         </Box>
         <Box variant="horizontally">
-          <Label htmlFor="name" className="w-20">
+          <Label htmlFor="date" className="w-20">
             購入日
           </Label>
           <Input
