@@ -11,6 +11,7 @@ import { PurchaseItemDataType } from "@/types/types";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { useRegisterItemValidation } from "./hooks/useRegisterItemValidation";
 import { useRouter } from "next/navigation";
+import { getKana } from "@/lib/inventory";
 
 interface PurchaseFormProps {
   userId: string;
@@ -76,9 +77,11 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
   };
 
   const handleRegisterItem = async () => {
-    const { kana, hasErr } = await registerItemValidation();
-    console.log("inventoryRegistration", inventoryRegistration);
-    console.log("inventoryRegistration", inventoryRegistration);
+    const { hasErr } = await registerItemValidation();
+    let kana;
+    if (newNameRef.current?.value) {
+      kana = await getKana(fridgeId, newNameRef.current.value);
+    }
     if (!hasErr) {
       setIsSubmitting(true);
       try {

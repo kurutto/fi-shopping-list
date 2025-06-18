@@ -8,6 +8,7 @@ import { TableRow, TableData } from "@/components/ui/table";
 import { InventoryType, PurchaseItemDataType } from "@/types/types";
 import { cn } from "@/lib/utils";
 import { useRegisterItemValidation } from "./hooks/useRegisterItemValidation";
+import { getKana } from "@/lib/inventory";
 
 export interface RegisterItemDataType {
   addInventory: boolean;
@@ -29,7 +30,7 @@ interface PurchaseFromReceiptTableRowType {
   fridgeId: string;
   item: PurchaseItemDataType;
   date?: string;
-  inventories:InventoryType[];
+  inventories: InventoryType[];
 }
 const PurchaseFromReceiptTableRow = forwardRef<
   RegisterItemType,
@@ -38,14 +39,30 @@ const PurchaseFromReceiptTableRow = forwardRef<
   const [name, setName] = useState(item.name);
   const [category, setCategory] = useState(item.category.toString());
   const [retouching, setRetouching] = useState(false);
-  const [deleteItem , setDeleteItem] = useState(false)
+  const [deleteItem, setDeleteItem] = useState(false);
   const [addInventory, setAddInventory] = useState(false);
   const [inventoryRegistration, setInventoryRegistration] = useState("");
   const existingNameRef = useRef<HTMLSelectElement | null>(null);
   const existingAmountRef = useRef<HTMLInputElement | null>(null);
   const newNameRef = useRef<HTMLInputElement | null>(null);
   const newAmountRef = useRef<HTMLInputElement | null>(null);
-  const {registerItemValidation,nameErr,existingNameErr,existingAmountErr,newNameErr,newAmountErr} = useRegisterItemValidation(fridgeId,name,addInventory,inventoryRegistration,existingNameRef,existingAmountRef,newNameRef,newAmountRef);
+  const {
+    registerItemValidation,
+    nameErr,
+    existingNameErr,
+    existingAmountErr,
+    newNameErr,
+    newAmountErr,
+  } = useRegisterItemValidation(
+    fridgeId,
+    name,
+    addInventory,
+    inventoryRegistration,
+    existingNameRef,
+    existingAmountRef,
+    newNameRef,
+    newAmountRef
+  );
 
   const handleAddInventory = () => {
     if (addInventory) {
@@ -67,14 +84,18 @@ const PurchaseFromReceiptTableRow = forwardRef<
     );
     setInventoryRegistration(value);
   };
-  
+
   //RegisterItemを親コンポーネントのPurchaseFromReceiptFormから呼び出すためrefを使用
   useImperativeHandle(ref, () => ({
     RegisterItem: async () => {
-      if(deleteItem){
+      if (deleteItem) {
         return undefined;
-      }else{
-        const {kana, hasErr} = await registerItemValidation();
+      } else {
+        const { hasErr } = await registerItemValidation();
+        let kana;
+        if (newNameRef.current?.value) {
+          kana = await getKana(fridgeId, newNameRef.current.value);
+        }
 
         if (hasErr) {
           return null;
@@ -104,12 +125,18 @@ const PurchaseFromReceiptTableRow = forwardRef<
             kana: kana,
           };
         }
-      }}
+      }
+    },
   }));
 
   return (
     <>
-      <TableRow className={cn(deleteItem && "opacity-10",addInventory && "border-b-0!")}>
+      <TableRow
+        className={cn(
+          deleteItem && "opacity-10",
+          addInventory && "border-b-0!"
+        )}
+      >
         <TableData>
           {retouching ? (
             <Input
@@ -141,29 +168,32 @@ const PurchaseFromReceiptTableRow = forwardRef<
           )}
         </TableData>
         <TableData className="text-center">
-          <Input
-            type="checkbox"
-            onChange={handleAddInventory}
-          />
+          <Input type="checkbox" onChange={handleAddInventory} />
         </TableData>
         <TableData className="text-center max-md:px-0">
-          {!retouching ? 
+          {!retouching ? (
             <div className="flex">
+              <Button
+                variant="edit"
+                size="small"
+                onClick={() => setRetouching((prev) => !prev)}
+              />
+              <Button
+                variant="delete"
+                size="small"
+                onClick={() => setDeleteItem((prev) => !prev)}
+              />
+            </div>
+          ) : (
             <Button
-              variant="edit"
               size="small"
+              color="secondary"
+              className="w-11 mx-auto"
               onClick={() => setRetouching((prev) => !prev)}
-            /><Button
-              variant="delete"
-              size="small"
-              onClick={() => setDeleteItem((prev) => !prev)}
-            /></div>:
-          <Button
-            size="small"
-            color="secondary"
-            className="w-11 mx-auto"
-            onClick={() => setRetouching((prev) => !prev)}
-          >保存</Button>}
+            >
+              保存
+            </Button>
+          )}
         </TableData>
       </TableRow>
       {addInventory && (
@@ -176,7 +206,9 @@ const PurchaseFromReceiptTableRow = forwardRef<
                     type="radio"
                     name="inventoryRegistration"
                     value={0}
-                    onChange={(e) => handleInventoryRegistration(e.target.value)}
+                    onChange={(e) =>
+                      handleInventoryRegistration(e.target.value)
+                    }
                     className="mr-1"
                   />
                   既存の在庫品に登録
@@ -225,7 +257,9 @@ const PurchaseFromReceiptTableRow = forwardRef<
                     type="radio"
                     name="inventoryRegistration"
                     value={1}
-                    onChange={(e) => handleInventoryRegistration(e.target.value)}
+                    onChange={(e) =>
+                      handleInventoryRegistration(e.target.value)
+                    }
                     className="mr-1"
                   />
                   新規に在庫品を登録

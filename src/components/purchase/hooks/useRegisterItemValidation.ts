@@ -3,7 +3,6 @@ import {
   toHalfWidthNumber,
   validateHalfWidthNumber,
 } from "@/lib/toHalfWidthNumberAndValidate";
-import { getKana } from "@/lib/inventory";
 
 export const useRegisterItemValidation = (
   fridgeId: string,
@@ -49,9 +48,6 @@ export const useRegisterItemValidation = (
         }
       }
       if (inventoryRegistration === "1") {
-        if (newNameRef.current?.value) {
-          kana = await getKana(fridgeId, newNameRef.current.value);
-        }
         const trimInventoryName = newNameRef.current?.value.trim();
         if (trimInventoryName === "") {
           setNewNameErr("必須項目です");
@@ -69,7 +65,7 @@ export const useRegisterItemValidation = (
         }
       }
     }
-    return {kana, hasErr};
+    return {hasErr};
   };
 
   return {
