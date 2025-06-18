@@ -27,12 +27,12 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
   const [category, setCategory] = useState(
     purchases ? purchases[0].category.toString() : "0"
   );
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [addInventory, setAddInventory] = useState(false);
   const [inventoryRegistration, setInventoryRegistration] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [retouching, setRetouching] = useState(purchases ? false : true);
   const [isAdded, setIsAdded] = useState("");
-  const dateRef = useRef<HTMLInputElement | null>(null);
   const existingNameRef = useRef<HTMLSelectElement | null>(null);
   const existingAmountRef = useRef<HTMLInputElement | null>(null);
   const newNameRef = useRef<HTMLInputElement | null>(null);
@@ -90,7 +90,7 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
           {
             name: name,
             category: category,
-            date: dateRef.current?.value!,
+            date: date,
             inventoryId:
               addInventory && inventoryRegistration === "0"
                 ? existingNameRef.current!.value
@@ -170,19 +170,24 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
           <Label htmlFor="date" className="w-20">
             購入日
           </Label>
-          <Input
-            type="date"
-            id="date"
-            ref={dateRef}
-            defaultValue={new Date().toISOString().split("T")[0]}
-          />
+
+          {retouching ? (
+            <Input
+              type="date"
+              id="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          ) : (
+            <Paragraph className="mt-2.5">{date}</Paragraph>
+          )}
         </Box>
         {purchases && (
           <Button
             type="button"
             color="secondary"
             onClick={() => setRetouching((prev) => !prev)}
-            className="w-25 mx-auto"
+            className="w-45 mx-auto"
           >
             {retouching ? "保存" : "編集"}
           </Button>
@@ -306,7 +311,7 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
           disabled={isSubmitting}
           onClick={handleRegisterItem}
         >
-          送信
+          登録
         </Button>
       </Box>
     </>

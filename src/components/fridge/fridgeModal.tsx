@@ -4,9 +4,9 @@ import Modal from "../ui/modal";
 import AddToListForm from "../shopping-list/addToListForm";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import InventoryForm from "../inventory/inventoryForm";
-import PurchaseForm from "../purchase/purchaseForm";
 import PurchaseFromReceipt from "../purchase/purchaseFromReceipt";
 import PurchaseRegistration from "../purchase/purchaseRegistration";
+import PurchaseFromProduct from "../purchase/purchaseFromProduct";
 
 interface FridgeModal {
   userId: string;
@@ -22,7 +22,7 @@ const FridgeModal = ({ userId, fridgeId }: FridgeModal) => {
       {item === 1 && <InventoryForm fridgeId={fridgeId} inventory={inventory} />}
       {item === 2 && <PurchaseRegistration userId={userId} fridgeId={fridgeId} />}
       {item === 3 && purchases && <PurchaseFromReceipt userId={userId} fridgeId={fridgeId} purchases={purchases} />}
-      {item === 4 && purchases && <PurchaseForm userId={userId} fridgeId={fridgeId} purchases={purchases} />}
+      {item === 4 && purchases && <PurchaseFromProduct userId={userId} fridgeId={fridgeId} purchases={purchases} />}
     </Modal>
   );
 };

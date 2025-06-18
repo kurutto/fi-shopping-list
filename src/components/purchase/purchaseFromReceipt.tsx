@@ -18,6 +18,7 @@ import {
   TableRow,
   TableHeader,
 } from "@/components/ui/table";
+import Heading from "../ui/heading";
 
 interface PurchaseFromReceiptProps {
   userId: string;
@@ -74,6 +75,7 @@ const PurchaseFromReceipt = ({
   };
   return (
     <>
+      <Heading level={3} className="text-center">レシート読取結果</Heading>
       {isAdded && <Paragraph>{isAdded}</Paragraph>}
       <Table>
         <TableHead>
@@ -105,15 +107,12 @@ const PurchaseFromReceipt = ({
       </Table>
       <Box variant="horizontally">
         <Label className="w-15">購入日</Label>
-        <Input type="date" id="date" ref={dateRef} />
-        <Paragraph color="gray" className="w-full text-xs mt-1">
-          * 未入力の場合は本日の日付が登録されます
-        </Paragraph>
+        <Input type="date" id="date" ref={dateRef} defaultValue={new Date().toISOString().split("T")[0]} />
       </Box>
       <Button
         color="primary"
         onClick={handleRegistration}
-        className="w-25 mx-auto"
+        className="w-45 mx-auto"
       >
         登録
       </Button>
