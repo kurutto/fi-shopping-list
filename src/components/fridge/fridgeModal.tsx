@@ -5,7 +5,8 @@ import AddToListForm from "../shopping-list/addToListForm";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import InventoryForm from "../inventory/inventoryForm";
 import PurchaseForm from "../purchase/purchaseForm";
-import PurchaseFromReceiptForm from "../purchase/purchaseFromReceiptForm";
+import PurchaseFromReceipt from "../purchase/purchaseFromReceipt";
+import PurchaseRegistration from "../purchase/purchaseRegistration";
 
 interface FridgeModal {
   userId: string;
@@ -18,9 +19,10 @@ const FridgeModal = ({ userId, fridgeId }: FridgeModal) => {
   return (
     <Modal isOpen={isOpen} handleOpen={handleOpen} boxW="w-lg">
       {item === 0 && <AddToListForm userId={userId} fridgeId={fridgeId} />}
-      {item === 1 && inventory && <InventoryForm fridgeId={fridgeId} inventory={inventory} />}
-      {item === 2 && <PurchaseForm userId={userId} fridgeId={fridgeId} />}
-      {item === 3 && purchases && <PurchaseFromReceiptForm userId={userId} fridgeId={fridgeId} purchases={purchases} />}
+      {item === 1 && <InventoryForm fridgeId={fridgeId} inventory={inventory} />}
+      {item === 2 && <PurchaseRegistration userId={userId} fridgeId={fridgeId} />}
+      {item === 3 && purchases && <PurchaseFromReceipt userId={userId} fridgeId={fridgeId} purchases={purchases} />}
+      {item === 4 && purchases && <PurchaseForm userId={userId} fridgeId={fridgeId} purchases={purchases} />}
     </Modal>
   );
 };

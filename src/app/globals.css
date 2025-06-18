@@ -7,6 +7,7 @@
   --color-gray: #a4a4a4;
   --color-light-gray: #dadada;
   --color-slight-gray: #fafafa;
+  --shadow: 0 0 7px rgba(0, 0, 0, 0.1);
   --shadow-pc: 0 0 7px rgba(0, 0, 0, 0.1);
   --shadow-sp: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
