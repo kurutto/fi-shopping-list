@@ -21,7 +21,6 @@ export const useRegisterItemValidation = (
   const [newAmountErr, setNewAmountErr] = useState("");
 
   const registerItemValidation = async () => {
-    let kana = "";
     let hasErr = false;
 
     const trimName = name.trim();
@@ -65,7 +64,7 @@ export const useRegisterItemValidation = (
         }
       }
     }
-    return {hasErr};
+    return { hasErr };
   };
 
   return {
