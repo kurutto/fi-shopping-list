@@ -24,7 +24,7 @@ export const useAddPurchase = (fridgeId: string) => {
     kana?: string
   ) => {
     //新規に在庫管理品を登録する
-    let inventoryId = createId();
+    const inventoryId = createId();
     if (inventoryCheck && values.inventoryName) {
       try {
         await postData(`/fridge/${fridgeId}/inventory`, {
