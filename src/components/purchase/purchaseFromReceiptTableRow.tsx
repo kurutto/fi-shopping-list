@@ -295,5 +295,6 @@ const PurchaseFromReceiptTableRow = forwardRef<
     </>
   );
 });
+PurchaseFromReceiptTableRow.displayName = "PurchaseFromReceiptTableRow";
 
 export default PurchaseFromReceiptTableRow;
