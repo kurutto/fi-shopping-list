@@ -23,7 +23,7 @@ const PurchaseFromImage = ({fridgeId}:PurchaseFromReceiptType) => {
       formData.append("image", image[0]);
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase/read-photo/receipt`,
+        `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase/read-photo`,
         {
           method: "POST",
           body: formData,
