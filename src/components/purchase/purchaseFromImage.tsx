@@ -1,10 +1,6 @@
 'use client'
-import { categories } from '@/constants/categories'
-import React, { useContext, useRef, useState } from 'react'
-import Label from '../ui/label'
-import Input from '../ui/input'
+import React, { useContext, useRef } from 'react'
 import { ModalContext, ModalContextType } from '@/context/modalContext'
-import { SessionType } from '@/types/types'
 import Button from '../ui/button'
 import { Li, List } from '../ui/list'
 
