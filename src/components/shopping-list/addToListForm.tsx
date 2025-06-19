@@ -54,7 +54,6 @@ const AddToListForm = ({ userId, fridgeId }: AddToListFormProps) => {
       },
       reset,
       fridgeId,
-      values.name,
       handleOpen
     );
     setIsSubmitting(false);

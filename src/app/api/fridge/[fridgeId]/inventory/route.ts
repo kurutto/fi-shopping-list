@@ -4,9 +4,10 @@ import { serverErrorMessage } from "@/constants/apiMessages";
 
 export async function POST(req: Request) {
   try {
-    const { fridgeId, category, name, kana, amount } = await req.json();
+    const { inventoryId, fridgeId, category, name, kana, amount } = await req.json();
     await prisma.inventory.create({
       data: {
+        id:inventoryId,
         fridgeId: fridgeId,
         category: category,
         name: name,

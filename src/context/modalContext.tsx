@@ -1,19 +1,24 @@
 "use client";
-import { InventoryType } from "@/types/types";
+import { InventoryType, PurchaseItemDataType } from "@/types/types";
 import { createContext, useState } from "react";
 
 export interface ModalContextType {
   item?: number | null;
   isOpen: boolean;
-  inventory?:InventoryType | null;
-  handleItemOpen: (itemNumber: number,inventory?:InventoryType | null) => void;
+  inventory?: InventoryType | null;
+  purchases?: PurchaseItemDataType[] | null;
+  handleItemOpen: (
+    itemNumber: number,
+    inventory?: InventoryType,
+    purchases?: PurchaseItemDataType[]
+  ) => void;
   handleOpen: () => void;
 }
 
 export const ModalContext = createContext<ModalContextType>({
   item: null,
   isOpen: false,
-  inventory:null,
+  inventory: null,
   handleItemOpen: () => {},
   handleOpen: () => {},
 });
@@ -25,24 +30,42 @@ export const ModalContextProvider = ({
 }) => {
   const [item, setItem] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [inventory, setInventory] = useState<InventoryType | null | undefined>(null)
-  const handleItemOpen = (itemNumber: number,inventoryItem?:InventoryType | null) => {
+  const [inventory, setInventory] = useState<InventoryType | null>(null);
+  const [purchases, setPurchases] = useState<PurchaseItemDataType[] | null>(null);
+  const handleItemOpen = (
+    itemNumber: number,
+    inventoryItem?: InventoryType | null,
+    purchasesItems?: PurchaseItemDataType[] | null
+  ) => {
     setItem(itemNumber);
-    if(inventoryItem){
-      setInventory(inventoryItem)
+    if (inventoryItem) {
+      setInventory(inventoryItem);
+    }
+    if (purchasesItems) {
+      setPurchases(purchasesItems);
     }
     setIsOpen((prev) => !prev);
   };
   const handleOpen = () => {
-    if(isOpen){
+    if (isOpen) {
       setItem(null);
       setInventory(null);
+      setPurchases(null);
     }
     setIsOpen((prev) => !prev);
   };
 
   return (
-    <ModalContext.Provider value={{ item, isOpen, inventory, handleItemOpen, handleOpen }}>
+    <ModalContext.Provider
+      value={{
+        item,
+        isOpen,
+        inventory,
+        purchases,
+        handleItemOpen,
+        handleOpen,
+      }}
+    >
       {children}
     </ModalContext.Provider>
   );

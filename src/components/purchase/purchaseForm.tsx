@@ -1,103 +1,156 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Box from "../ui/box";
 import Button from "../ui/button";
-import Heading from "../ui/heading";
 import Input from "../ui/input";
 import Label from "../ui/label";
 import Paragraph from "../ui/paragraph";
 import Select from "../ui/select";
 import { categories } from "@/constants/categories";
 import { useAddPurchase } from "./hooks/useAddPurchase";
-import { InventoryType } from "@/types/types";
-
-export const formSchema = (
-  inventoryCheck: boolean,
-  inventories: InventoryType[]
-) =>
-  z.object({
-    name: z
-      .string()
-      .transform((value) => value.trim())
-      .refine((value) => value.length > 0, { message: "必須項目です" }),
-    category: z.string().min(1, {
-      message: "必須項目です",
-    }),
-    date: z.string(),
-    inventoryId:
-      inventoryCheck && inventories.length > 0
-        ? z.string().min(1, {
-            message: "必須項目です",
-          })
-        : z.string(),
-    amount: z.coerce.number({ message: "半角整数で入力してください" }),
-  });
-
-export type formType = z.infer<ReturnType<typeof formSchema>>;
+import { PurchaseItemDataType } from "@/types/types";
+import { ModalContext, ModalContextType } from "@/context/modalContext";
+import { useRegisterItemValidation } from "./hooks/useRegisterItemValidation";
+import { useRouter } from "next/navigation";
+import { getKana } from "@/lib/inventory";
 
 interface PurchaseFormProps {
   userId: string;
   fridgeId: string;
+  purchases?: PurchaseItemDataType[];
 }
 
-const PurchaseForm = ({ userId, fridgeId }: PurchaseFormProps) => {
-  const { isAdded, inventories, addPurchase } = useAddPurchase(fridgeId);
-  const [inventoryCheck, setInventoryCheck] = useState(false);
+const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
+  const { handleOpen } = useContext<ModalContextType>(ModalContext);
+  const { inventories, addPurchase } = useAddPurchase(fridgeId);
+  const router = useRouter();
+  const [name, setName] = useState(purchases ? purchases[0].name : "");
+  const [category, setCategory] = useState(
+    purchases ? purchases[0].category.toString() : "0"
+  );
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [addInventory, setAddInventory] = useState(false);
+  const [inventoryRegistration, setInventoryRegistration] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [retouching, setRetouching] = useState(purchases ? false : true);
+  const [isAdded, setIsAdded] = useState("");
+  const existingNameRef = useRef<HTMLSelectElement | null>(null);
+  const existingAmountRef = useRef<HTMLInputElement | null>(null);
+  const newNameRef = useRef<HTMLInputElement | null>(null);
+  const newAmountRef = useRef<HTMLInputElement | null>(null);
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<formType>({
-    resolver: zodResolver(formSchema(inventoryCheck, inventories)),
-    defaultValues: {
-      category: "0",
-      date: new Date().toISOString().split("T")[0],
-      amount: 0,
-    },
-  });
-  const onSubmit = async (values: formType) => {
-    setIsSubmitting(true);
-    addPurchase(inventoryCheck, values, reset, userId);
-    setIsSubmitting(false);
+    registerItemValidation,
+    nameErr,
+    existingNameErr,
+    existingAmountErr,
+    newNameErr,
+    newAmountErr,
+  } = useRegisterItemValidation(
+    fridgeId,
+    name,
+    addInventory,
+    inventoryRegistration,
+    existingNameRef,
+    existingAmountRef,
+    newNameRef,
+    newAmountRef
+  );
+
+  const handleAddInventory = () => {
+    if (addInventory) {
+      [existingNameRef, existingAmountRef, newNameRef, newAmountRef].forEach(
+        (ref) => {
+          if (ref.current) ref.current.value = "";
+        }
+      );
+      setInventoryRegistration("");
+    }
+    setAddInventory((prev) => !prev);
+  };
+
+  const handleInventoryRegistration = (value: string) => {
+    [existingNameRef, existingAmountRef, newNameRef, newAmountRef].forEach(
+      (ref) => {
+        if (ref.current) ref.current.value = "";
+      }
+    );
+    setInventoryRegistration(value);
+  };
+
+  const handleRegisterItem = async () => {
+    const { hasErr } = await registerItemValidation();
+    let kana;
+    if (newNameRef.current?.value) {
+      kana = await getKana(fridgeId, newNameRef.current.value);
+    }
+    if (!hasErr) {
+      setIsSubmitting(true);
+      try {
+        addPurchase(
+          addInventory,
+          {
+            name: name,
+            category: category,
+            date: date,
+            inventoryId:
+              addInventory && inventoryRegistration === "0"
+                ? existingNameRef.current!.value
+                : "",
+            inventoryName:
+              addInventory && inventoryRegistration === "1"
+                ? newNameRef.current!.value
+                : "",
+            amount:
+              addInventory && inventoryRegistration === "0"
+                ? Number(existingAmountRef.current?.value)
+                : addInventory && inventoryRegistration === "1"
+                ? Number(newAmountRef.current?.value)
+                : 0,
+          },
+          userId,
+          kana
+        );
+        setIsAdded(`${name}が追加されました`);
+        setIsSubmitting(false);
+        handleOpen();
+        router.refresh();
+      } catch {
+        setIsSubmitting(false);
+      }
+    }
   };
   return (
     <>
-      <Heading level={2} className="justify-center mb-8">
-        購入品追加
-      </Heading>
       {isAdded && <Paragraph className="text-center">{isAdded}</Paragraph>}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box variant="spaceY">
-          <Box variant="horizontally">
-            <Label htmlFor="name" className="w-20">
-              品名<span className="text-destructive pl-0.5">*</span>
-            </Label>
-            <div className="flex-1">
+      <Box variant="spaceY">
+        <Box variant="horizontally">
+          <Label className="w-20">
+            品名<span className="text-destructive pl-0.5">*</span>
+          </Label>
+          <div className="flex-1">
+            {retouching ? (
               <Input
                 type="text"
                 id="name"
-                {...register("name")}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full"
               />
-              {errors.name && (
-                <Paragraph variant="error">{errors.name.message}</Paragraph>
-              )}
-            </div>
-          </Box>
-          <Box variant="horizontally">
-            <Label htmlFor="category" className="w-20">
-              カテゴリ<span className="text-destructive pl-0.5">*</span>
-            </Label>
-            <div className="sm:flex-1">
+            ) : (
+              <Paragraph className="mt-2.5">{name}</Paragraph>
+            )}
+            {nameErr && <Paragraph variant="error">{nameErr}</Paragraph>}
+          </div>
+        </Box>
+        <Box variant="horizontally">
+          <Label className="w-20">
+            カテゴリ<span className="text-destructive pl-0.5">*</span>
+          </Label>
+          <div className="sm:flex-1">
+            {retouching ? (
               <Select
                 id="category"
-                {...register("category")}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="flex-1"
               >
                 {categories.map((category, idx) => (
@@ -106,93 +159,161 @@ const PurchaseForm = ({ userId, fridgeId }: PurchaseFormProps) => {
                   </option>
                 ))}
               </Select>
-              {errors.category && (
-                <Paragraph variant="error">{errors.category.message}</Paragraph>
-              )}
-            </div>
-          </Box>
-          <Box variant="horizontally">
-            <Label htmlFor="name" className="w-20">
-              購入日
-            </Label>
-            <Input type="date" id="date" {...register("date")} />
-          </Box>
-          <Box variant="horizontally" className="items-center">
-            <Label htmlFor="inventoryCheck">在庫管理に追加</Label>
-            <Input
-              type="checkbox"
-              id="inventoryCheck"
-              checked={inventoryCheck}
-              onChange={() => setInventoryCheck((prev) => !prev)}
-            />
-          </Box>
+            ) : (
+              <Paragraph className="mt-2.5">
+                {categories[Number(category)]}
+              </Paragraph>
+            )}
+          </div>
+        </Box>
+        <Box variant="horizontally">
+          <Label htmlFor="date" className="w-20">
+            購入日
+          </Label>
 
-          <Paragraph
-            className={
-              inventoryCheck && inventories.length === 0 ? "" : "hidden"
-            }
-          >
-            在庫管理品がありません。先に在庫管理登録を行なってください。
-          </Paragraph>
-          <Box
-            variant="horizontallyForm"
-            className={inventories.length > 0 && inventoryCheck ? "" : "!hidden"}
-          >
-            <Label htmlFor="inventoryId" className="sm:w-20">
-              在庫管理名
-            </Label>
-            <div>
-              <Select
-                id="inventoryId"
-                {...register("inventoryId")}
-                className="flex-1"
-              >
-                <option value="">既存の在庫管理品から選択</option>
-                {inventories?.map((inventory, idx) => (
-                  <option value={inventory.id} key={idx}>
-                    {inventory.name}({categories[inventory.category]})
-                  </option>
-                ))}
-              </Select>
-              {errors.inventoryId && (
-                <Paragraph variant="error">{errors.inventoryId.message}</Paragraph>
-              )}
-            </div>
-          </Box>
-          <Box
-            variant="horizontallyForm"
-            className={inventories.length > 0 && inventoryCheck ? "" : "!hidden"}
-          >
-            <Label htmlFor="amount" className="w-20">
-              追加数量<span className="text-destructive pl-0.5">*</span>
-            </Label>
-            <div className="flex-1">
-              <Input
-                type="text"
-                id="amount"
-                {...register("amount")}
-                className="w-36"
-              />
-              {errors.amount && (
-                <Paragraph variant="error">{errors.amount.message}</Paragraph>
-              )}
-            </div>
-          </Box>
+          {retouching ? (
+            <Input
+              type="date"
+              id="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          ) : (
+            <Paragraph className="mt-2.5">{date}</Paragraph>
+          )}
         </Box>
-        <Box
-          variant="horizontally"
-          className="md:mt-8 max-md:mt-6 justify-center"
-        >
+        {purchases && (
           <Button
-            type="submit"
-            color="primary"
-            className="w-45"
-            disabled={isSubmitting}
+            type="button"
+            color="secondary"
+            onClick={() => setRetouching((prev) => !prev)}
+            className="w-45 mx-auto"
           >
-            送信
+            {retouching ? "保存" : "編集"}
           </Button>
+        )}
+        <Box variant="horizontally" className="items-center">
+          <Label htmlFor="inventoryCheck">在庫管理に追加</Label>
+          <Input
+            type="checkbox"
+            id="inventoryCheck"
+            checked={addInventory}
+            onChange={handleAddInventory}
+          />
         </Box>
-      </form>
+        {addInventory && (
+          <>
+            <div className="flex w-full flex-wrap">
+              <label className="w-full mb-1 ml-2 block">
+                <Input
+                  type="radio"
+                  name="inventoryRegistration"
+                  value={0}
+                  onChange={(e) => handleInventoryRegistration(e.target.value)}
+                  className="mr-1"
+                />
+                既存の在庫品に登録
+              </label>
+              {inventoryRegistration === "0" && (
+                <>
+                  {inventories.length === 0 ? (
+                    <Paragraph className="ml-4">
+                      在庫管理品がありません。「新規に在庫品を登録」から登録を行なってください。
+                    </Paragraph>
+                  ) : (
+                    <>
+                      <Select
+                        id="inventoryId"
+                        ref={existingNameRef}
+                        className="flex-1 ml-4"
+                      >
+                        <option value="">選択</option>
+                        {inventories?.map((inventory, idx) => (
+                          <option value={inventory.id} key={idx}>
+                            {inventory.name}({categories[inventory.category]})
+                          </option>
+                        ))}
+                      </Select>
+                      {existingNameErr && (
+                        <Paragraph variant="error" className="w-full ml-4">
+                          {existingNameErr}
+                        </Paragraph>
+                      )}
+                      <Input
+                        type="text"
+                        id="amount"
+                        ref={existingAmountRef}
+                        className="w-17 ml-3 text-center"
+                        placeholder="追加数"
+                      />
+                      {existingAmountErr && (
+                        <Paragraph variant="error" className="w-full ml-4">
+                          {existingAmountErr}
+                        </Paragraph>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+            <div className="flex w-full flex-wrap">
+              <label className="w-full mb-1 ml-2">
+                <Input
+                  type="radio"
+                  name="inventoryRegistration"
+                  value={1}
+                  onChange={(e) => handleInventoryRegistration(e.target.value)}
+                  className="mr-1"
+                />
+                新規に在庫品を登録
+              </label>
+              {inventories.length === 0 &&
+                existingNameErr &&
+                inventoryRegistration != "1" && (
+                  <Paragraph variant="error" className="ml-4">
+                    {existingNameErr}
+                  </Paragraph>
+                )}
+              {inventoryRegistration === "1" && (
+                <>
+                  <Input
+                    type="text"
+                    ref={newNameRef}
+                    placeholder="在庫管理品名"
+                    className="flex-1 ml-4"
+                  />
+                  {newNameErr && (
+                    <Paragraph variant="error">{newNameErr}</Paragraph>
+                  )}
+                  <Input
+                    type="text"
+                    id="amount"
+                    ref={newAmountRef}
+                    placeholder="追加数"
+                    className="w-17 ml-3 text-center"
+                  />
+                  {newAmountErr && (
+                    <Paragraph variant="error">{newAmountErr}</Paragraph>
+                  )}
+                </>
+              )}
+            </div>
+          </>
+        )}
+      </Box>
+      <Box
+        variant="horizontally"
+        className="md:mt-8 max-md:mt-6 justify-center"
+      >
+        <Button
+          color="primary"
+          className="w-45"
+          disabled={isSubmitting}
+          onClick={handleRegisterItem}
+        >
+          登録
+        </Button>
+      </Box>
     </>
   );
 };

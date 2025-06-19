@@ -15,7 +15,7 @@ interface TableHeadProps
 }
 const TableHead = ({ className, ...props }: TableHeadProps) => {
   const baseStyle =
-    "md:bg-secondary [&_tr]:max-md:border-b-5 [&_tr]:max-md:border-b-slight-gray max-md:text-gray max-md:bg-white max-md:sticky top-0";
+    "md:bg-secondary [&_tr]:max-md:border-b-5 [&_tr]:max-md:border-b-slight-gray max-md:text-gray max-md:bg-white max-md:sticky max-md:top-0";
   return <thead className={cn(baseStyle, className)} {...props} />;
 };
 

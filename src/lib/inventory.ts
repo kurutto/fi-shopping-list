@@ -1,4 +1,4 @@
-import { InventoryType } from "@/types/types";
+import { InventoryType, KanaDataType } from "@/types/types";
 
 export const getInventories = async (
   fridgeId: string
@@ -28,5 +28,11 @@ export const getKana = async (fridgeId: string, itemName: string) => {
   if (!res.ok) {
     throw new Error("Failed to fetch inventories");
   }
-  return await res.json();
+  const kanaData =  await res.json();
+  const kanaArr = kanaData.result.word.map((kanaObj: KanaDataType) =>
+    kanaObj.furigana ? kanaObj.furigana : kanaObj.surface
+  );
+  const kana = kanaArr.join("");
+  return kana;
 };
+
