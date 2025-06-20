@@ -145,55 +145,22 @@ erDiagram
 
 ## 使用技術
 
-### フレームワーク・ライブラリ
+- **Framework**: Next.js (v15)
+- **Language**: TypeScript, React 19
+- **Styling**: Tailwind CSS v4, tailwind-variants, tailwind-merge
+- **Form**: React Hook Form, Zod, @hookform/resolvers
+- **Authentication**: NextAuth.js + Prisma Adapter
+- **Backend / Database**: Prisma ORM, Neon Serverless
+- **Security**: bcryptjs, jsonwebtoken
+- **Email**: Nodemailer
+- **Icons / UI**: React Icons, React Spinners
+- **Utilities**: clsx, cuid2
+- **AI Integration**: OpenAI Node.js SDK
 
-- Next.js: 15.2.1
-- React: 19.0.0
-- TypeScript: ^5
+### 開発支援ツール
 
-### フロントエンド
-
-- Tailwind CSS: ^4
-- tailwind-merge: ^3.0.2
-- tailwind-variants: ^1.0.0
-- clsx: ^2.1.1
-- react-hook-form: ^7.54.2
-- @hookform/resolvers: ^4.1.3
-- zod: ^3.24.2
-- react-icons: ^5.5.0
-- react-spinners: ^0.15.0
-
-### 認証・認可
-
-- next-auth: ^4.24.11
-- @next-auth/prisma-adapter: ^1.0.7
-- jsonwebtoken: ^9.0.2
-
-### データベース関連
-
-- Prisma Client: ^6.4.1
-- @neondatabase/serverless: ^0.10.4
-- @paralleldrive/cuid2: ^2.2.2
-- bcryptjs: ^3.0.2
-
-### メール送信
-
-- nodemailer: ^6.10.0
-
-### 外部 API
-
-- Yahoo JAPAN API
-
-### 開発用ツール
-
-- ESLint: ^9
-- eslint-config-next: 15.2.1
-- @eslint/eslintrc: ^3
-- Tailwind CSS (PostCSS plugin): ^4
-- Prisma CLI: ^6.4.1
-- @types/\*（型定義）  
-  @types/react: ^19.0.12  
-  @types/react-dom: ^19  
-  @types/node: ^20  
-  @types/jsonwebtoken: ^9.0.9  
-  @types/nodemailer: ^6.4.17
+- ESLint  
+- TypeScript  
+- Prisma CLI  
+- Next.js Lint  
+- Tailwind CSS with PostCSS
