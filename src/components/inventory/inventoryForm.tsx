@@ -18,7 +18,7 @@ import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { useDeleteDataFromModal } from "@/hooks/useDeleteDataFromModal";
 import { useUpdateDataFromModal } from "@/hooks/useUpdateDataFromModal";
 import { useCreateDataFromModal } from "@/hooks/useCreateDataFromModal";
-import { createId } from '@paralleldrive/cuid2';
+import { createId } from "@paralleldrive/cuid2";
 
 const formSchema = z.object({
   category: z.coerce.number(),
@@ -76,7 +76,7 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
       createItem(
         `/fridge/${fridgeId}/inventory`,
         {
-          inventoryId:createId(),
+          inventoryId: createId(),
           fridgeId: fridgeId,
           category: Number(values.category),
           name: values.name,
@@ -169,7 +169,7 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
             className={cn("block", inventory ? "w-30" : "w-45")}
             disabled={isSubmitting}
           >
-            送信
+            {isSubmitting ? "登録中" : "登録"}
           </Button>
           {inventory && (
             <Button

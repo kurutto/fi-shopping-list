@@ -1,17 +1,21 @@
-'use client'
-import React, { useContext, useRef } from 'react'
-import { ModalContext, ModalContextType } from '@/context/modalContext'
-import Button from '../ui/button'
-import { Li, List } from '../ui/list'
+"use client";
+import React, { useContext, useRef, useState } from "react";
+import { ModalContext, ModalContextType } from "@/context/modalContext";
+import Button from "../ui/button";
+import { Li, List } from "../ui/list";
+import Paragraph from "../ui/paragraph";
 
 interface PurchaseFromReceiptType {
-  fridgeId:string;
+  fridgeId: string;
 }
-const PurchaseFromImage = ({fridgeId}:PurchaseFromReceiptType) => {
-  const { handleItemOpen,handleOpen } = useContext<ModalContextType>(ModalContext);
+const PurchaseFromImage = ({ fridgeId }: PurchaseFromReceiptType) => {
+  const { handleItemOpen, handleOpen } =
+    useContext<ModalContextType>(ModalContext);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = async () => {
+    setIsLoading(true);
     const image = inputRef.current?.files;
     if (image) {
       const formData = new FormData();
@@ -27,9 +31,9 @@ const PurchaseFromImage = ({fridgeId}:PurchaseFromReceiptType) => {
       );
       const data = await res.json();
       handleOpen();
-      if(data.type === 0){
+      if (data.type === 0) {
         handleItemOpen(3, undefined, data.items);
-      }else if(data.type === 1){
+      } else if (data.type === 1) {
         handleItemOpen(4, undefined, data.items);
       }
     }
@@ -42,9 +46,7 @@ const PurchaseFromImage = ({fridgeId}:PurchaseFromReceiptType) => {
     <>
       <List variant="ul">
         <Li>・レシート画像</Li>
-        <Li>
-          ・商品画像（商品名が読み取れるように一つずつ撮影してください）
-        </Li>
+        <Li>・商品画像（商品名が読み取れるように一つずつ撮影してください）</Li>
       </List>
       <div className="flex justify-center">
         <input
@@ -55,10 +57,14 @@ const PurchaseFromImage = ({fridgeId}:PurchaseFromReceiptType) => {
           ref={inputRef}
           className="hidden"
         />
-        <Button variant="photo" color="primary" onClick={handleClick} />
+        {isLoading ? 
+          <Paragraph>画像解析中・・・</Paragraph>
+        :(
+          <Button variant="photo" color="primary" onClick={handleClick} />
+        )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default PurchaseFromImage
+export default PurchaseFromImage;
