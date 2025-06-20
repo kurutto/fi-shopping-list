@@ -311,7 +311,7 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
           disabled={isSubmitting}
           onClick={handleRegisterItem}
         >
-          登録
+          {isSubmitting ? "登録中" : "登録"}
         </Button>
       </Box>
     </>

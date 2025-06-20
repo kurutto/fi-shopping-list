@@ -107,7 +107,7 @@ const AddToListForm = ({ userId, fridgeId }: AddToListFormProps) => {
           className="block mx-auto w-45 md:mt-8 max-md:mt-6"
           disabled={isSubmitting}
         >
-          送信
+          {isSubmitting ? "登録中" : "登録"}
         </Button>
       </form>
     </>

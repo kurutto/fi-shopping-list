@@ -31,13 +31,15 @@ const PurchaseFromReceipt = ({
   fridgeId,
   purchases,
 }: PurchaseFromReceiptProps) => {
-  const { addPurchase,inventories } = useAddPurchase(fridgeId);
+  const { addPurchase, inventories } = useAddPurchase(fridgeId);
   const { handleOpen } = useContext<ModalContextType>(ModalContext);
   const dateRef = useRef<HTMLInputElement>(null);
   const tableRowRefs = useRef<RegisterItemType[]>([]);
   const [isAdded, setIsAdded] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRegistration = async () => {
+    setIsSubmitting(true);
     let hasErr = false;
     const registerItems: (null | RegisterItemDataType)[] = [];
 
@@ -67,6 +69,7 @@ const PurchaseFromReceipt = ({
           );
         }
       }
+      setIsSubmitting(false);
       setIsAdded("購入品が登録されました");
       setTimeout(() => {
         handleOpen();
@@ -75,13 +78,17 @@ const PurchaseFromReceipt = ({
   };
   return (
     <>
-      <Heading level={3} className="text-center">レシート読取結果</Heading>
+      <Heading level={3} className="text-center">
+        レシート読取結果
+      </Heading>
       {isAdded && <Paragraph>{isAdded}</Paragraph>}
       <Table>
         <TableHead>
           <TableRow>
             <TableHeader className="text-left">品名</TableHeader>
-            <TableHeader className="w-20 whitespace-nowrap">カテゴリ</TableHeader>
+            <TableHeader className="w-20 whitespace-nowrap">
+              カテゴリ
+            </TableHeader>
             <TableHeader className="w-11 text-nowrap">
               在庫
               <br />
@@ -107,14 +114,20 @@ const PurchaseFromReceipt = ({
       </Table>
       <Box variant="horizontally">
         <Label className="w-15">購入日</Label>
-        <Input type="date" id="date" ref={dateRef} defaultValue={new Date().toISOString().split("T")[0]} />
+        <Input
+          type="date"
+          id="date"
+          ref={dateRef}
+          defaultValue={new Date().toISOString().split("T")[0]}
+        />
       </Box>
       <Button
         color="primary"
         onClick={handleRegistration}
         className="w-45 mx-auto"
+        disabled={isSubmitting}
       >
-        登録
+        {isSubmitting ? "登録中" : "登録"}
       </Button>
     </>
   );
