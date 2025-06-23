@@ -1,4 +1,7 @@
-import { idAlreadyRegisteredMessage, serverErrorMessage } from "@/constants/apiMessages";
+import {
+  idAlreadyRegisteredMessage,
+  serverErrorMessage,
+} from "@/constants/apiMessages";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -9,7 +12,12 @@ export async function PUT(req: Request) {
     if (fridge && fridgeId !== id) {
       return NextResponse.json(
         { message: idAlreadyRegisteredMessage, errorId: "INVALID_ID" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
     await prisma.fridge.update({
@@ -27,7 +35,12 @@ export async function PUT(req: Request) {
     console.error("POST Error:", err);
     return NextResponse.json(
       { message: serverErrorMessage },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
     );
   }
 }
@@ -54,7 +67,12 @@ export async function GET(req: Request) {
     console.error("GET Error:", err);
     return NextResponse.json(
       { message: serverErrorMessage },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
     );
   }
 }
@@ -72,7 +90,12 @@ export async function DELETE(req: Request) {
     console.error("DELETE Error:", err);
     return NextResponse.json(
       { message: serverErrorMessage },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
     );
   }
 }

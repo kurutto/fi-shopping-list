@@ -21,16 +21,19 @@ export async function POST(req: Request) {
     console.error("POST Error:", err);
     return NextResponse.json(
       { message: serverErrorMessage },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
     );
   }
 }
 
 export async function GET(req: Request) {
   try {
-    const fridgeId = await req.url
-      .split("fridge/")[1]
-      .replace("/purchase", "");
+    const fridgeId = await req.url.split("fridge/")[1].replace("/purchase", "");
     const purchases = await prisma.purchase.findMany({
       where: { fridgeId: fridgeId },
       include: {
@@ -44,9 +47,6 @@ export async function GET(req: Request) {
     return NextResponse.json(purchases);
   } catch (err) {
     console.error("GET Error:", err);
-    return NextResponse.json(
-      { message: serverErrorMessage },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
   }
 }

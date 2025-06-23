@@ -17,7 +17,12 @@ export async function PUT(req: Request) {
     } catch {
       return NextResponse.json(
         { message: invalidOrExpiredTokenMessage, errorId: "INVALID_TOKEN" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
     const email = decoded.email;
@@ -25,7 +30,12 @@ export async function PUT(req: Request) {
     if (typeof email !== "string") {
       return NextResponse.json(
         { message: invalidTokenMessage, errorId: "INVALID_TOKEN" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
     const user = await prisma.user.findFirst({
@@ -41,7 +51,12 @@ export async function PUT(req: Request) {
     if (!user) {
       return NextResponse.json(
         { message: invalidTokenMessage, errorId: "INVALID_TOKEN" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
     //credentialでアカウントを作成する時に既に登録されているuserIdとemailの場合、新規にcredentialでアカウントを作成できないので、credential[0]としても問題はない
@@ -57,6 +72,14 @@ export async function PUT(req: Request) {
     return NextResponse.json({ status: 201 });
   } catch (err) {
     console.error("GET Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }

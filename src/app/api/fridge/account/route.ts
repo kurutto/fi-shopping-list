@@ -20,15 +20,17 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(
-      { fridgeId: fridgeId },
-      { status: 201 }
-    );
+    return NextResponse.json({ fridgeId: fridgeId }, { status: 201 });
   } catch (err) {
-      console.error("POST Error:", err);
-      return NextResponse.json(
-        { message: serverErrorMessage },
-        { status: 500 }
-      );
+    console.error("POST Error:", err);
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }

@@ -12,7 +12,15 @@ export async function DELETE(req: Request) {
     });
     return NextResponse.json({ status: 201 });
   } catch (err) {
-      console.error("DELETE Error:", err);
-      return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    console.error("DELETE Error:", err);
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }
