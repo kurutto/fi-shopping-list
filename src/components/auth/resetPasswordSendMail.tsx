@@ -23,6 +23,7 @@ type formType = z.infer<typeof formSchema>;
 const ResetPasswordSendMail = () => {
   const router = useRouter();
   const [sendMessage, setSendMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -32,7 +33,7 @@ const ResetPasswordSendMail = () => {
     resolver: zodResolver(formSchema),
   });
   const onSubmit = async (values: formType) => {
-    setSendMessage(`データ送信中・・・`);
+    setIsSubmitting(true);
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/credential/reset-password/send-mail`,
@@ -49,7 +50,7 @@ const ResetPasswordSendMail = () => {
 
       const data = await res.json();
       if (!res.ok) {
-        setSendMessage("");
+        setIsSubmitting(false);
         setError("root", { message: data.message });
       }
       if (res.ok) {
@@ -95,12 +96,10 @@ const ResetPasswordSendMail = () => {
             color="primary"
             type="submit"
             className="mt-10 w-48 block mx-auto"
+            disabled={isSubmitting}
           >
-            メールを送信
+            {isSubmitting ? "送信中" : "メールを送信"}
           </Button>
-          {sendMessage && (
-            <Paragraph className="text-center">{sendMessage}</Paragraph>
-          )}
         </form>
       </Box>
     </>
