@@ -48,7 +48,7 @@ type formType = z.infer<typeof formSchema>;
 
 const CredentialSignup = () => {
   const router = useRouter();
-  const [sendMessage, setSendMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const {
     register,
@@ -60,7 +60,7 @@ const CredentialSignup = () => {
   });
 
   const onSubmit = async (values: formType) => {
-    setSendMessage(`データ送信中・・・`);
+    setIsSubmitting(true);
     setResponseMessage("");
     try {
       const res = await fetch(
@@ -82,13 +82,13 @@ const CredentialSignup = () => {
       const data = await res.json();
       if (!res.ok) {
         if (data.errorId === "INVALID_ID") {
-          setSendMessage("");
+          setIsSubmitting(false);
           setError("id", { message: data.message });
         } else if (data.errorId === "INVALID_EMAIL") {
-          setSendMessage("");
+          setIsSubmitting(false);
           setError("email", { message: data.message });
         } else {
-          setSendMessage("");
+          setIsSubmitting(false);
           setError("root", { message: data.message });
         }
       }
@@ -175,12 +175,10 @@ const CredentialSignup = () => {
         color="secondary"
         type="submit"
         className="mt-10 w-48 block mx-auto"
+        disabled={isSubmitting}
       >
-        新規作成
+        {isSubmitting ? "送信中" : "新規作成" }
       </Button>
-      {sendMessage && (
-        <Paragraph className="text-center">{sendMessage}</Paragraph>
-      )}
       {responseMessage && (
         <Paragraph className="text-center">{responseMessage}</Paragraph>
       )}

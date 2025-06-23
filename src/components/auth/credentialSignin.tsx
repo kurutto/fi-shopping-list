@@ -9,6 +9,7 @@ import Paragraph from "../ui/paragraph";
 import Button from "../ui/button";
 import Box from "../ui/box";
 import Heading from "../ui/heading";
+import { useState } from "react";
 
 const formSchema = z.object({
   id: z.string().min(1, { message: "必須項目です" }),
@@ -17,6 +18,7 @@ const formSchema = z.object({
 type formType = z.infer<typeof formSchema>;
 
 const CredentialSignin = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -25,6 +27,7 @@ const CredentialSignin = () => {
     resolver: zodResolver(formSchema),
   });
   const onSubmit = async (values: formType) => {
+    setIsSubmitting(true);
     await signIn("credentials", {
       id: values.id,
       password: values.password,
@@ -69,8 +72,13 @@ const CredentialSignin = () => {
           </div>
         </Box>
       </Box>
-      <Button color="secondary" type="submit" className="w-48 block mx-auto">
-        ログイン
+      <Button
+        color="secondary"
+        type="submit"
+        className="w-48 block mx-auto"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "ログイン中" : "ログイン"}
       </Button>
     </form>
   );
