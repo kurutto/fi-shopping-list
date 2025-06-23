@@ -22,7 +22,6 @@ const formSchema = z.object({
 type formType = z.infer<typeof formSchema>;
 const ResetPasswordSendMail = () => {
   const router = useRouter();
-  const [sendMessage, setSendMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
