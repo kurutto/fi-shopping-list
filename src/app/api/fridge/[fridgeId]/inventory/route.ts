@@ -4,10 +4,11 @@ import { serverErrorMessage } from "@/constants/apiMessages";
 
 export async function POST(req: Request) {
   try {
-    const { inventoryId, fridgeId, category, name, kana, amount } = await req.json();
+    const { inventoryId, fridgeId, category, name, kana, amount } =
+      await req.json();
     await prisma.inventory.create({
       data: {
-        id:inventoryId,
+        id: inventoryId,
         fridgeId: fridgeId,
         category: category,
         name: name,
@@ -18,7 +19,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Success" }, { status: 201 });
   } catch (err) {
     console.error("POST Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }
 
@@ -41,7 +50,15 @@ export async function PUT(req: Request) {
     return NextResponse.json({ message: "Success" }, { status: 201 });
   } catch (err) {
     console.error("PUT Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }
 export async function GET(req: Request) {

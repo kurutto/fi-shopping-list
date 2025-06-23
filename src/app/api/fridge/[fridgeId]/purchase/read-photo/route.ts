@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { serverErrorMessage } from "@/constants/apiMessages";
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
@@ -8,15 +9,25 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   try {
-    const formData  = await req.formData();
+    const formData = await req.formData();
     const file = formData.get("image") as Blob;
 
     if (!file) {
-      return NextResponse.json({ error: "ファイルが見つかりません" }, { status: 400 });
+      return NextResponse.json(
+        { error: "ファイルが見つかりません" },
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
+      );
     }
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-    const base64Image = `data:image/jpeg;base64,${fileBuffer.toString('base64')}`;
+    const base64Image = `data:image/jpeg;base64,${fileBuffer.toString(
+      "base64"
+    )}`;
 
     const data = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -52,7 +63,15 @@ export async function POST(req: Request) {
     const json = JSON.parse(text);
     return NextResponse.json(json);
   } catch (e) {
-    console.log(e);
-    return NextResponse.json('500サーバーエラー');
+    console.error(e);
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }

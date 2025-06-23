@@ -14,14 +14,19 @@ export async function POST(req: Request) {
       where: {
         email: email,
       },
-      include:{
-        credential:true
-      }
+      include: {
+        credential: true,
+      },
     });
-    if (!checkUser || checkUser.credential.length===0 ) {
+    if (!checkUser || checkUser.credential.length === 0) {
       return NextResponse.json(
         { message: accountNotFoundMessage, errorId: "INVALID_ACCOUNT" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
 
@@ -51,6 +56,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 200 });
   } catch (err) {
     console.error("POST Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }

@@ -19,7 +19,12 @@ export async function POST(req: Request) {
     if (checkId) {
       return NextResponse.json(
         { message: "このIDは既に登録されています", errorId: "INVALID_ID" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
     const checkEmail = await prisma.user.findFirst({
@@ -33,7 +38,12 @@ export async function POST(req: Request) {
           message: emailAlreadyRegisteredMessage,
           errorId: "INVALID_EMAIL",
         },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
 
@@ -73,6 +83,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 200 });
   } catch (err) {
     console.error("POST Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }

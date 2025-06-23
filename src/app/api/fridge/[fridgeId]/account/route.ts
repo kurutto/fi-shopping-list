@@ -14,6 +14,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 201 });
   } catch (err) {
     console.error("POST Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }

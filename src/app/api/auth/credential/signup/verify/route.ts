@@ -13,7 +13,12 @@ export async function GET(req: Request) {
     if (!token) {
       return NextResponse.json(
         { message: invalidTokenMessage },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
     let decoded;
@@ -22,7 +27,12 @@ export async function GET(req: Request) {
     } catch {
       return NextResponse.json(
         { message: invalidOrExpiredTokenMessage },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
     const id = decoded.id;
@@ -49,9 +59,18 @@ export async function GET(req: Request) {
         emailVerified: new Date(),
       },
     });
+
     return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/signin`);
   } catch (err) {
     console.error("GET Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }

@@ -18,7 +18,12 @@ export async function POST(req: Request) {
     if (!existingUser) {
       return NextResponse.json(
         { message: idNotRegisteredMessage },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
 
@@ -35,11 +40,24 @@ export async function POST(req: Request) {
     } else {
       return NextResponse.json(
         { message: passwordIncorrectMessage },
-        { status: 400 }
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
       );
     }
   } catch (err) {
     console.error("POST Error:", err);
-    return NextResponse.json({ message: serverErrorMessage }, { status: 500 });
+    return NextResponse.json(
+      { message: serverErrorMessage },
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
+    );
   }
 }
