@@ -51,7 +51,7 @@ const PurchaseFromImage = ({ fridgeId }: PurchaseFromReceiptType) => {
       <div className="flex justify-center">
         <input
           type="file"
-          capture="environment"
+          // capture="environment"
           accept="image/*"
           onChange={handleChange}
           ref={inputRef}
