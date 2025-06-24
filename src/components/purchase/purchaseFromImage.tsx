@@ -30,7 +30,6 @@ const PurchaseFromImage = ({ fridgeId }: PurchaseFromReceiptType) => {
         }
       );
       const data = await res.json();
-      alert(data)
       handleOpen();
       if (data.type === 0) {
         handleItemOpen(3, undefined, data.items);
