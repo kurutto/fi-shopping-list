@@ -5,6 +5,7 @@ import Input from "../ui/input";
 import Label from "../ui/label";
 import Paragraph from "../ui/paragraph";
 import Select from "../ui/select";
+import AmountInput from "../ui/amountInput";
 import { categories } from "@/constants/categories";
 import { useAddPurchase } from "./hooks/useAddPurchase";
 import { PurchaseItemDataType } from "@/types/types";
@@ -276,25 +277,38 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
                 )}
               {inventoryRegistration === "1" && (
                 <>
-                  <Input
-                    type="text"
-                    ref={newNameRef}
-                    placeholder="在庫管理品名"
-                    className="flex-1 ml-4"
-                  />
-                  {newNameErr && (
-                    <Paragraph variant="error">{newNameErr}</Paragraph>
-                  )}
-                  <Input
+                  <Box variant="horizontally" className="ml-4">
+                    <Label htmlFor="inventoryName" className="w-24">在庫管理品名</Label>
+                    <div>
+                    <Input
+                      id="inventoryName"
+                      type="text"
+                      ref={newNameRef}
+                      placeholder="在庫管理品名"
+                      className="flex-1"
+                    />
+                    {newNameErr && (
+                      <Paragraph variant="error">{newNameErr}</Paragraph>
+                    )}
+                    </div>
+                  </Box>
+                  <Box variant="horizontally" className="ml-4 mt-2">
+                    <Label className="w-24">追加数</Label>
+                    <div>
+                    <AmountInput ref={newAmountRef} />
+                    {newAmountErr && (
+                      <Paragraph variant="error">{newAmountErr}</Paragraph>
+                    )}
+                    </div>
+                  </Box>
+                  {/* <Input
                     type="text"
                     id="amount"
                     ref={newAmountRef}
                     placeholder="追加数"
                     className="w-17 ml-3 text-center"
-                  />
-                  {newAmountErr && (
-                    <Paragraph variant="error">{newAmountErr}</Paragraph>
-                  )}
+                  /> */}
+                  
                 </>
               )}
             </div>
