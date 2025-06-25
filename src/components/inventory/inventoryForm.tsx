@@ -9,6 +9,7 @@ import Input from "../ui/input";
 import Label from "../ui/label";
 import Paragraph from "../ui/paragraph";
 import Select from "../ui/select";
+import AmountInput from "../ui/amountInput";
 import { categories } from "@/constants/categories";
 import { InventoryType } from "@/types/types";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,7 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
   const { deleteItem } = useDeleteDataFromModal();
   const {
     register,
+    setValue,
     handleSubmit,
     reset,
     formState: { errors },
@@ -145,11 +147,17 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
               残数<span className="text-destructive pl-0.5">*</span>
             </Label>
             <div className="sm:flex-1">
-              <Input
+              {/* <Input
                 type="text"
                 id="remaining"
                 {...register("remaining")}
                 className="w-36"
+              /> */}
+              <AmountInput
+                inputProps={{ ...register("remaining", { valueAsNumber: true })}}
+                defaultAmount={inventory?.remaining}
+                id="remaining"
+                setValue={setValue}
               />
               {errors.remaining && (
                 <Paragraph variant="error">
