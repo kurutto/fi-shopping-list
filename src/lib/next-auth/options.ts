@@ -8,8 +8,8 @@ export const nextAuthOptions: NextAuthOptions = {
   secret: process.env.SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 12 * 60 * 60,
-    updateAge: 6 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,//ユーザーがアクティブの場合
   },
   providers: [
     GoogleProvider({
