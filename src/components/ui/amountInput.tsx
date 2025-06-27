@@ -1,54 +1,65 @@
 import React, { Ref, useState } from "react";
-import { UseFormSetValue, FieldValues, Path, PathValue, useController } from "react-hook-form";
+import { UseFormSetValue, FieldValues, Path, PathValue, ControllerRenderProps, UseFormGetValues } from "react-hook-form";
 import Input from "./input";
 import Button from "./button";
 import Box from "./box";
 import { toHalfWidthNumber } from "@/lib/toHalfWidthNumberAndValidate";
 
 interface AmountInputType<T extends FieldValues> {
+  rhf?:boolean;
   ref?: Ref<HTMLInputElement>;
   defaultAmount?: number;
-  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   id?: string;
+  getValues?: UseFormGetValues<T>;
   setValue?: UseFormSetValue<T>;
+  field?: ControllerRenderProps<T, Path<T>>;
 }
 
 const AmountInput = <T extends FieldValues>({
+  rhf=false,
   ref,
   defaultAmount,
-  inputProps,
   id,
+  getValues,
   setValue,
+  field,
 }: AmountInputType<T>) => {
-  const [amount, setAmount] = useState<string | number>(defaultAmount ? defaultAmount : 0);
+  const [amount, setAmount] = useState<number>(defaultAmount ? defaultAmount : 0);
   const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-          const newValue = Number(toHalfWidthNumber(e.target.value));
-          if(typeof newValue != "number"){
-            setAmount(0);
-            return;
-          }
-          setAmount(Number(newValue));
-          if (setValue && id) {
-            setValue(id as Path<T>, newValue as PathValue<T, Path<T>>);
-          }
+    const halfWidth = toHalfWidthNumber(e.target.value);
+    const newValue = Number(halfWidth);
+    if (isNaN(newValue)) {
+      if(rhf){
+        field!.onChange(0);
+      }else{
+        setAmount(0);
+      }
+      return;
+    }
+    if(rhf){
+      field!.onChange(newValue);
+    }else{
+      setAmount(newValue);
+    }
   }
   const handleDecrease = () => {
-    if(typeof amount === "number"){
+    if(rhf && getValues && setValue){
+      const current = getValues(id as Path<T>);
+      if(0 < current){
+        setValue(id as Path<T>, current - 1 as PathValue<T, Path<T>>);
+      }
+    }else{
       if (0 < amount ) {
         setAmount((prev) => Number(prev) - 1);
-        if (setValue && id) {
-          setValue(id as Path<T>, (amount - 1) as PathValue<T, Path<T>>);
-        }
       }
     }
-    
   };
   const handleIncrease = () => {
-    if(typeof amount === "number"){
-      setAmount((prev) => Number(prev) + 1);
-      if (setValue && id) {
-        setValue(id as Path<T>, (amount + 1) as PathValue<T, Path<T>>);
-      }
+    if(rhf && getValues && setValue){
+      const current = getValues(id as Path<T>);
+        setValue(id as Path<T>, current + 1 as PathValue<T, Path<T>>);
+    }else{
+        setAmount((prev) => Number(prev) + 1);
     }
   };
   return (
@@ -61,26 +72,25 @@ const AmountInput = <T extends FieldValues>({
       >
         &#8722;
       </Button>
-      <Input
-        type="text"
-        className="w-15 text-center"
-        ref={ref}
-        value={amount}
-        onChange={(e) => {
-          const halfWidth = toHalfWidthNumber(e.target.value);
-          const newValue = Number(halfWidth);
-          if(isNaN(newValue)){
-            setAmount(0);
-            return;
-          }
-          setAmount(newValue);
-          if (setValue && id) {
-            setValue(id as Path<T>, newValue as PathValue<T, Path<T>>);
-          }
-        }}
-        {...inputProps}
-        id={id}
-      />
+      {rhf ? (
+        <Input
+          type="text"
+          className="w-15 text-center"
+          {...field}
+          onChange={(e) => handleInputChange(e)}
+          id={id}
+        />
+      ):(
+        <Input
+          type="text"
+          className="w-15 text-center"
+          ref={ref}
+          value={amount}
+          onChange={(e) => handleInputChange(e)}
+          id={id}
+        />
+      )}
+      
       <Button
         type="button"
         color="outline"

@@ -19,7 +19,7 @@ import { useDeleteDataFromModal } from "@/hooks/useDeleteDataFromModal";
 import { useUpdateDataFromModal } from "@/hooks/useUpdateDataFromModal";
 import { useCreateDataFromModal } from "@/hooks/useCreateDataFromModal";
 import { createId } from "@paralleldrive/cuid2";
-import { toHalfWidthNumber } from "@/lib/toHalfWidthNumberAndValidate";
+import AmountInput from "../ui/amountInput";
 
 const formSchema = z.object({
   category: z.coerce.number(),
@@ -150,45 +150,13 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
               残数<span className="text-destructive pl-0.5">*</span>
             </Label>
             <div className="sm:flex-1">
-              <Box className="flex gap-2">
-                <Button
-                  type="button"
-                  color="outline"
-                  className="w-12.5 text-2xl"
-                  onClick={() => {
-                    const current = getValues("remaining");
-                    setValue("remaining", current - 1);
-                  }}
-                >
-                  &#8722;
-                </Button>
-                <Input
-                  type="text"
-                  className="w-15 text-center"
-                  {...field}
-                  onChange={(e) => {
-                    const halfWidth = toHalfWidthNumber(e.target.value);
-                    const newValue = Number(halfWidth);
-                    if (isNaN(newValue)) {
-                      field.onChange(0);
-                      return;
-                    }
-                    field.onChange(newValue);
-                  }}
-                  id="remaining"
-                />
-                <Button
-                  type="button"
-                  color="outline"
-                  className="w-12.5 text-2xl"
-                  onClick={() => {
-                    const current = getValues("remaining");
-                    setValue("remaining", current + 1);
-                  }}
-                >
-                  &#0043;
-                </Button>
-              </Box>
+              <AmountInput
+                rhf={true}
+                field={field}
+                getValues={getValues}
+                setValue={setValue}
+                id="remaining"
+              />
               {errors.remaining && (
                 <Paragraph variant="error">
                   {errors.remaining.message}
