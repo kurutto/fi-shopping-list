@@ -90,12 +90,11 @@ export interface PurchaseItemDataType {
   category: number;
 }
 
-
 export interface RegisterItemDataType {
-    name: string;
-    category: string;
-    date: string;
-    inventoryId: string;
-    inventoryName: string;
-    amount: number;
+  name: string;
+  category: string;
+  date: string;
+  inventoryId: string;
+  inventoryName: string;
+  amount: number;
 }

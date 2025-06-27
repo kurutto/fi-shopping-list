@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import { z } from "zod";
 import Box from "../ui/box";
 import Button from "../ui/button";
@@ -9,7 +9,6 @@ import Input from "../ui/input";
 import Label from "../ui/label";
 import Paragraph from "../ui/paragraph";
 import Select from "../ui/select";
-import AmountInput from "../ui/amountInput";
 import { categories } from "@/constants/categories";
 import { InventoryType } from "@/types/types";
 import { cn } from "@/lib/utils";
@@ -20,6 +19,7 @@ import { useDeleteDataFromModal } from "@/hooks/useDeleteDataFromModal";
 import { useUpdateDataFromModal } from "@/hooks/useUpdateDataFromModal";
 import { useCreateDataFromModal } from "@/hooks/useCreateDataFromModal";
 import { createId } from "@paralleldrive/cuid2";
+import AmountInput from "../ui/amountInput";
 
 const formSchema = z.object({
   category: z.coerce.number(),
@@ -44,10 +44,12 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
   const { deleteItem } = useDeleteDataFromModal();
   const {
     register,
+    getValues,
     setValue,
     handleSubmit,
     reset,
     formState: { errors },
+    control,
   } = useForm<formType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,6 +58,7 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
       remaining: inventory?.remaining || 0,
     },
   });
+  const { field } = useController({ name: "remaining", control });
 
   const onSubmit = async (values: formType) => {
     setIsSubmitting(true);
@@ -147,17 +150,12 @@ const InventoryForm = ({ fridgeId, inventory }: InventoryFormProps) => {
               残数<span className="text-destructive pl-0.5">*</span>
             </Label>
             <div className="sm:flex-1">
-              {/* <Input
-                type="text"
-                id="remaining"
-                {...register("remaining")}
-                className="w-36"
-              /> */}
               <AmountInput
-                inputProps={{ ...register("remaining", { valueAsNumber: true })}}
-                defaultAmount={inventory?.remaining}
-                id="remaining"
+                rhf={true}
+                field={field}
+                getValues={getValues}
                 setValue={setValue}
+                id="remaining"
               />
               {errors.remaining && (
                 <Paragraph variant="error">
