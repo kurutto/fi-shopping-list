@@ -1,8 +1,9 @@
 import React, { Ref, useState } from "react";
-import { UseFormSetValue, FieldValues, Path, PathValue } from "react-hook-form";
+import { UseFormSetValue, FieldValues, Path, PathValue, useController } from "react-hook-form";
 import Input from "./input";
 import Button from "./button";
 import Box from "./box";
+import { toHalfWidthNumber } from "@/lib/toHalfWidthNumberAndValidate";
 
 interface AmountInputType<T extends FieldValues> {
   ref?: Ref<HTMLInputElement>;
@@ -19,19 +20,35 @@ const AmountInput = <T extends FieldValues>({
   id,
   setValue,
 }: AmountInputType<T>) => {
-  const [amount, setAmount] = useState(defaultAmount ? defaultAmount : 0);
+  const [amount, setAmount] = useState<string | number>(defaultAmount ? defaultAmount : 0);
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+          const newValue = Number(toHalfWidthNumber(e.target.value));
+          if(typeof newValue != "number"){
+            setAmount(0);
+            return;
+          }
+          setAmount(Number(newValue));
+          if (setValue && id) {
+            setValue(id as Path<T>, newValue as PathValue<T, Path<T>>);
+          }
+  }
   const handleDecrease = () => {
-    if (0 < amount) {
-      setAmount((prev) => prev - 1);
-      if (setValue && id) {
-        setValue(id as Path<T>, (amount - 1) as PathValue<T, Path<T>>);
+    if(typeof amount === "number"){
+      if (0 < amount ) {
+        setAmount((prev) => Number(prev) - 1);
+        if (setValue && id) {
+          setValue(id as Path<T>, (amount - 1) as PathValue<T, Path<T>>);
+        }
       }
     }
+    
   };
   const handleIncrease = () => {
-    setAmount((prev) => prev + 1);
-    if (setValue && id) {
-      setValue(id as Path<T>, (amount + 1) as PathValue<T, Path<T>>);
+    if(typeof amount === "number"){
+      setAmount((prev) => Number(prev) + 1);
+      if (setValue && id) {
+        setValue(id as Path<T>, (amount + 1) as PathValue<T, Path<T>>);
+      }
     }
   };
   return (
@@ -49,7 +66,18 @@ const AmountInput = <T extends FieldValues>({
         className="w-15 text-center"
         ref={ref}
         value={amount}
-        onChange={(e) => setAmount(Number(e.target.value))}
+        onChange={(e) => {
+          const halfWidth = toHalfWidthNumber(e.target.value);
+          const newValue = Number(halfWidth);
+          if(isNaN(newValue)){
+            setAmount(0);
+            return;
+          }
+          setAmount(newValue);
+          if (setValue && id) {
+            setValue(id as Path<T>, newValue as PathValue<T, Path<T>>);
+          }
+        }}
         {...inputProps}
         id={id}
       />
