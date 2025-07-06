@@ -20,26 +20,26 @@ password:demopassword
 ### 1.ユーザーアカウントを作成
 
 まずは、サービス利用のためのユーザーアカウントを作成します。  
-<img src="images/signin.png" width="300" />
+<div style="margin-top: 10px;"><img src="images/signin.png" width="300" /></div>
 
 ### 2.冷蔵庫アカウントを作成
 
 家庭や施設などの単位で管理できる「冷蔵庫アカウント」を作成します。1 ユーザーで複数の冷蔵庫を管理可能です。  
-<img src="images/account.png" width="300" />
+<div style="margin-top: 10px;"><img src="images/account.png" width="300" /></div>
 
 ### 3.冷蔵庫アカウントのトップページから操作
-   <img src="images/top.png" width="300" />
+   <div style="margin-top: 20px;"><img src="images/top.png" width="300" /></div>
 
 
 冷蔵庫アカウントごとのトップページで、以下の操作を行えます：
 
 - 「買い物リスト」の登録・削除  
-   <img src="images/shoppinglist.png" width="300" />
+   <div style="margin-top: 10px;"><img src="images/shoppinglist.png" width="300" /></div>
 - 「在庫管理」の登録・編集・削除  
-   <img src="images/inventory.png" width="300" />
+   <div style="margin-top: 10px;"><img src="images/inventory.png" width="300" /></div>
 - 「購入品」の登録・削除  
     購入品の登録はレシート画像/商品画像読み取りもしくはフォーム入力で行います。  
-   <img src="images/purchase.png" width="300" />
+   <div style="margin-top: 10px;"><img src="images/purchase.png" width="300" /></div>
 
 ### 4.冷蔵庫アカウントの管理
 
@@ -47,12 +47,12 @@ password:demopassword
 
 - 冷蔵庫アカウントの ID や名称、概要を編集
 - 他のユーザーを冷蔵庫アカウントに登録  
-  <img src="images/account_setting.png" width="300" />
+  <div style="margin-top: 10px;"><img src="images/account_setting.png" width="300" /></div>
 
 ### 5.ユーザーアカウントの管理
 
 ユーザー ID やユーザーアカウント名の編集が行えます。  
-<img src="images/mypage.png" width="300" />
+<div style="margin-top: 10px;"><img src="images/mypage.png" width="300" /></div>
 
 ## 構成・デザイン
 
