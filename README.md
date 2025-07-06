@@ -28,6 +28,8 @@ password:demopassword
 <img src="images/account.png" width="300" />
 
 ### 3.冷蔵庫アカウントのトップページから操作
+   <img src="images/top.png" width="300" />
+
 
 冷蔵庫アカウントごとのトップページで、以下の操作を行えます：
 
