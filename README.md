@@ -36,6 +36,7 @@ password:demopassword
 - 「在庫管理」の登録・編集・削除  
 <img src="images/inventory.png" width="300" />
 - 「購入品」の登録・削除  
+購入品の登録はレシート画像/商品画像読み取りもしくはフォーム入力で行います。  
 <img src="images/purchase.png" width="300" />
 
 ### 4.冷蔵庫アカウントの管理
