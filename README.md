@@ -33,8 +33,6 @@ password:demopassword
 
 <div style="margin-top:20px;margin-bottom:20px;"><img src="images/top.png" width="300" /></div>  
 
-  
-
 #### 冷蔵庫アカウントごとのトップページで、以下の操作を行えます：
 
 - ##### 「買い物リスト」の登録・削除
