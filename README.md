@@ -31,7 +31,8 @@ password:demopassword
 
 ### 3.冷蔵庫アカウントのトップページから操作
 
-<div style="margin-top: 20px;margin-bottom: 20px;"><img src="images/top.png" width="300" /></div>
+<div style="margin-top:20px;margin-bottom:20px;"><img src="images/top.png" width="300" /></div>  
+
 
 冷蔵庫アカウントごとのトップページで、以下の操作を行えます：
 
