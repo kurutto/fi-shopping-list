@@ -37,11 +37,11 @@ password:demopassword
 
 #### 冷蔵庫アカウントごとのトップページで、以下の操作を行えます：
 
-- 「買い物リスト」の登録・削除
+- ##### 「買い物リスト」の登録・削除
    <div style="margin-top: 10px;"><img src="images/shoppinglist.png" width="300" /></div>
-- 「在庫管理」の登録・編集・削除
+- ##### 「在庫管理」の登録・編集・削除
    <div style="margin-top: 10px;"><img src="images/inventory.png" width="300" /></div>
-- 「購入品」の登録・削除  
+- ##### 「購入品」の登録・削除  
    購入品の登録はレシート画像/商品画像読み取りもしくはフォーム入力で行います。
    <div style="margin-top: 10px;"><img src="images/purchase.png" width="300" /></div>
 
