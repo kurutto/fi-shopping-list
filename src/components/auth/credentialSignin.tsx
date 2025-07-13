@@ -11,6 +11,7 @@ import Box from "../ui/box";
 import Heading from "../ui/heading";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { idPasswordErrorMessage, loginErrorMessage } from "@/constants/messages";
 
 const formSchema = z.object({
   id: z.string().min(1, { message: "必須項目です" }),
@@ -42,7 +43,7 @@ const CredentialSignin = () => {
       if (res?.error) {
         setError("root", {
           type: "manual",
-          message: "IDまたはパスワードが正しくありません",
+          message: idPasswordErrorMessage,
         });
       } else if (res?.ok) {
         router.push("/");
@@ -50,7 +51,7 @@ const CredentialSignin = () => {
     } catch {
       setError("root", {
         type: "manual",
-        message: "ログインに失敗しました。再度お試しください。",
+        message: loginErrorMessage,
       });
     } finally {
       setIsSubmitting(false);
