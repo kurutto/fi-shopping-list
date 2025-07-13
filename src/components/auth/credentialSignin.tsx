@@ -10,6 +10,7 @@ import Button from "../ui/button";
 import Box from "../ui/box";
 import Heading from "../ui/heading";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   id: z.string().min(1, { message: "必須項目です" }),
@@ -18,21 +19,42 @@ const formSchema = z.object({
 type formType = z.infer<typeof formSchema>;
 
 const CredentialSignin = () => {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<formType>({
     resolver: zodResolver(formSchema),
   });
+
   const onSubmit = async (values: formType) => {
     setIsSubmitting(true);
-    await signIn("credentials", {
-      id: values.id,
-      password: values.password,
-      callbackUrl: "/",
-    });
+    try {
+      const res = await signIn("credentials", {
+        id: values.id,
+        password: values.password,
+        callbackUrl: "/",
+        redirect:false,
+      });
+      if (res?.error) {
+        setError("root", {
+          type: "manual",
+          message: "IDまたはパスワードが正しくありません",
+        });
+      } else if (res?.ok) {
+        router.push("/");
+      }
+    } catch (err) {
+      setError("root", {
+        type: "manual",
+        message: "ログインに失敗しました。再度お試しください。",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return (
     <form
