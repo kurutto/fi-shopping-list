@@ -47,7 +47,7 @@ const CredentialSignin = () => {
       } else if (res?.ok) {
         router.push("/");
       }
-    } catch (err) {
+    } catch {
       setError("root", {
         type: "manual",
         message: "ログインに失敗しました。再度お試しください。",
