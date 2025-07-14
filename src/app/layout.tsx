@@ -8,6 +8,7 @@ import { ModalContextProvider } from "@/context/modalContext";
 export const metadata: Metadata = {
   title: "FI買物リスト",
   description: "在庫管理もできる買物リストアプリ",
+  manifest: "/manifest.json",
 };
 const notoSansJP = Noto_Sans_JP({ subsets: ["latin"], weight: ["400"] });
 
