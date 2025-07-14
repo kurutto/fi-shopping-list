@@ -10,6 +10,8 @@ const withPWACustom = withPWA({
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "standalone",
+  reactStrictMode: true,
+  output: "standalone",
 };
 
 export default withPWACustom(nextConfig);
