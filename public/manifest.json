@@ -1,7 +1,7 @@
 {
-  "name": "FI shopping list",
-  "short_name": "FI shopping list",
-  "description": "TFI shopping list",
+  "name": "FI買物リスト",
+  "short_name": "FI買物リスト",
+  "description": "在庫管理もできる買物リストアプリです",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fafafa",
