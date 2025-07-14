@@ -58,6 +58,7 @@ password:demopassword
 
 <div style="margin-top: 10px;"><img src="images/mypage.png" width="300" /></div>
 
+
 ## 構成・デザイン
 
 https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1
@@ -159,22 +160,25 @@ erDiagram
 
 ## 使用技術
 
-- **Framework**: Next.js (v15)
+- **Framework**: Next.js (v15.3.3)
 - **Language**: TypeScript, React 19
 - **Styling**: Tailwind CSS v4, tailwind-variants, tailwind-merge
 - **Form**: React Hook Form, Zod, @hookform/resolvers
-- **Authentication**: NextAuth.js + Prisma Adapter
-- **Backend / Database**: Prisma ORM, Neon Serverless
+- **Authentication**: NextAuth.js + @next-auth/prisma-adapter
+- **Backend / Database**:
+  - Prisma ORM
+  - Neon Serverless (@neondatabase/serverless)
 - **Security**: bcryptjs, jsonwebtoken
 - **Email**: Nodemailer
 - **Icons / UI**: React Icons, React Spinners
-- **Utilities**: clsx, cuid2
-- **AI Integration**: OpenAI Node.js SDK
+- **Utilities**: clsx, cuid2 (@paralleldrive/cuid2)
+- **AI Integration**: OpenAI Node.js SDK (`openai`)
+- **PWA**: @ducanh2912/next-pwa
 
 ### 開発支援ツール
 
-- ESLint
-- TypeScript
-- Prisma CLI
-- Next.js Lint
-- Tailwind CSS with PostCSS
+- **型定義**: @types/react, @types/node, @types/jsonwebtoken, @types/nodemailer
+- **Linter**: ESLint (`eslint`, `eslint-config-next`, `@eslint/eslintrc`)
+- **型検査**: TypeScript (^5)
+- **スタイル構築**: Tailwind CSS v4 + PostCSS (`@tailwindcss/postcss`)
+- **ORM CLI**: Prisma CLI (`prisma`)
