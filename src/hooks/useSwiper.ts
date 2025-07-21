@@ -9,7 +9,8 @@ export const useSwiper = (
 ) => {
   const handleTouchEnd = useCallback(
     (event: Swiper) => {
-      const diff = event.touches.diff;
+      const diff = event.touches.startX - event.touches.currentX;
+
       if (Math.abs(diff) < MIN_SWIPE_DISTANCE) return;
 
       // スワイプ左右の確認
