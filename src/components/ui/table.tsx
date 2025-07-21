@@ -1,13 +1,18 @@
 import { cn } from "@/lib/utils";
+import React from "react";
 
 interface TableProps
-  extends Omit<React.ComponentPropsWithoutRef<"table">, "className"> {
+  extends Omit<React.ComponentPropsWithRef<"table">, "className"> {
   className?: string;
 }
-const Table = ({ className, ...props }: TableProps) => {
-  const baseStyle = "w-full";
-  return <table className={cn(baseStyle, className)} {...props} />;
-};
+const Table = React.forwardRef<HTMLTableElement, TableProps>(
+  ({ className, ...props }, ref) => {
+    const baseStyle = "w-full";
+    return <table className={cn(baseStyle, className)} {...props} ref={ref} />;
+  }
+);
+
+Table.displayName = "Table";
 
 interface TableHeadProps
   extends Omit<React.ComponentPropsWithoutRef<"thead">, "className"> {
