@@ -7,9 +7,12 @@ interface TableProps
 }
 const Table = React.forwardRef<HTMLTableElement, TableProps>(
   ({ className, ...props }, ref) => {
-  const baseStyle = "w-full";
-  return <table className={cn(baseStyle, className)} {...props} ref={ref} />;
-});
+    const baseStyle = "w-full";
+    return <table className={cn(baseStyle, className)} {...props} ref={ref} />;
+  }
+);
+
+Table.displayName = "Table";
 
 interface TableHeadProps
   extends Omit<React.ComponentPropsWithoutRef<"thead">, "className"> {
