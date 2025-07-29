@@ -112,10 +112,10 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
         );
         setIsAdded(`${name}が追加されました`);
         setIsSubmitting(false);
-        handleOpen();
         mutate(
           `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase`
         );
+        handleOpen();
       } catch {
         setIsSubmitting(false);
       }
@@ -305,13 +305,6 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
                       )}
                     </div>
                   </Box>
-                  {/* <Input
-                    type="text"
-                    id="amount"
-                    ref={newAmountRef}
-                    placeholder="追加数"
-                    className="w-17 ml-3 text-center"
-                  /> */}
                 </>
               )}
             </div>
