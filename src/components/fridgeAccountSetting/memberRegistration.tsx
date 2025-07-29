@@ -9,7 +9,6 @@ import Heading from "../ui/heading";
 import Label from "../ui/label";
 import Input from "../ui/input";
 import Button from "../ui/button";
-import { useRouter } from "next/navigation";
 import { postData } from "@/lib/postData";
 import { networkErrorMessage } from "@/constants/messages";
 
@@ -18,7 +17,6 @@ interface UserRegistrationProps {
 }
 
 const MemberRegistration = ({ fridgeId }: UserRegistrationProps) => {
-  const router = useRouter();
   const inputId = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<UserType>();
   const handleSearch = async () => {

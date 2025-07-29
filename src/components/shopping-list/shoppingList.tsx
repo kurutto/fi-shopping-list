@@ -1,13 +1,10 @@
 "use client";
 import useSWR, { mutate } from "swr";
-import { FaListUl } from "react-icons/fa6";
 import { List, Li } from "../ui/list";
 import RemoveFromListButton from "./removeFromListButton";
 import Paragraph from "../ui/paragraph";
 import Button from "../ui/button";
 import { ShoppingListType } from "@/types/types";
-import Heading from "../ui/heading";
-import AddToListButton from "./addToListButton";
 
 interface ShoppingListProps {
   userId: string;
