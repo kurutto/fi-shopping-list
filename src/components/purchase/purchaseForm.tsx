@@ -1,3 +1,5 @@
+"use client";
+import { mutate } from "swr";
 import { useContext, useRef, useState } from "react";
 import Box from "../ui/box";
 import Button from "../ui/button";
@@ -11,7 +13,6 @@ import { useAddPurchase } from "./hooks/useAddPurchase";
 import { PurchaseItemDataType } from "@/types/types";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 import { useRegisterItemValidation } from "./hooks/useRegisterItemValidation";
-import { useRouter } from "next/navigation";
 import { getKana } from "@/lib/inventory";
 
 interface PurchaseFormProps {
@@ -23,7 +24,6 @@ interface PurchaseFormProps {
 const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
   const { handleOpen } = useContext<ModalContextType>(ModalContext);
   const { inventories, addPurchase } = useAddPurchase(fridgeId);
-  const router = useRouter();
   const [name, setName] = useState(purchases ? purchases[0].name : "");
   const [category, setCategory] = useState(
     purchases ? purchases[0].category.toString() : "0"
@@ -113,7 +113,9 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
         setIsAdded(`${name}が追加されました`);
         setIsSubmitting(false);
         handleOpen();
-        router.refresh();
+        mutate(
+          `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase`
+        );
       } catch {
         setIsSubmitting(false);
       }
@@ -278,27 +280,29 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
               {inventoryRegistration === "1" && (
                 <>
                   <Box variant="horizontally" className="ml-4">
-                    <Label htmlFor="inventoryName" className="w-24">在庫管理品名</Label>
+                    <Label htmlFor="inventoryName" className="w-24">
+                      在庫管理品名
+                    </Label>
                     <div>
-                    <Input
-                      id="inventoryName"
-                      type="text"
-                      ref={newNameRef}
-                      placeholder="在庫管理品名"
-                      className="flex-1"
-                    />
-                    {newNameErr && (
-                      <Paragraph variant="error">{newNameErr}</Paragraph>
-                    )}
+                      <Input
+                        id="inventoryName"
+                        type="text"
+                        ref={newNameRef}
+                        placeholder="在庫管理品名"
+                        className="flex-1"
+                      />
+                      {newNameErr && (
+                        <Paragraph variant="error">{newNameErr}</Paragraph>
+                      )}
                     </div>
                   </Box>
                   <Box variant="horizontally" className="ml-4 mt-2">
                     <Label className="w-24">追加数</Label>
                     <div>
-                    <AmountInput ref={newAmountRef} />
-                    {newAmountErr && (
-                      <Paragraph variant="error">{newAmountErr}</Paragraph>
-                    )}
+                      <AmountInput ref={newAmountRef} />
+                      {newAmountErr && (
+                        <Paragraph variant="error">{newAmountErr}</Paragraph>
+                      )}
                     </div>
                   </Box>
                   {/* <Input
@@ -308,7 +312,6 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
                     placeholder="追加数"
                     className="w-17 ml-3 text-center"
                   /> */}
-                  
                 </>
               )}
             </div>

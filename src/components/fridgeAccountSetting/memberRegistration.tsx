@@ -1,4 +1,5 @@
 "use client";
+import { mutate } from "swr";
 import { useRef, useState } from "react";
 import { UserType } from "@/types/types";
 import Paragraph from "../ui/paragraph";
@@ -8,7 +9,6 @@ import Heading from "../ui/heading";
 import Label from "../ui/label";
 import Input from "../ui/input";
 import Button from "../ui/button";
-import { useRouter } from "next/navigation";
 import { postData } from "@/lib/postData";
 import { networkErrorMessage } from "@/constants/messages";
 
@@ -17,7 +17,6 @@ interface UserRegistrationProps {
 }
 
 const MemberRegistration = ({ fridgeId }: UserRegistrationProps) => {
-  const router = useRouter();
   const inputId = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<UserType>();
   const handleSearch = async () => {
@@ -32,7 +31,7 @@ const MemberRegistration = ({ fridgeId }: UserRegistrationProps) => {
       });
       setUser(undefined);
       inputId.current!.value = "";
-      router.refresh();
+      mutate(`${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}`);
     } catch {
       alert(networkErrorMessage);
     }

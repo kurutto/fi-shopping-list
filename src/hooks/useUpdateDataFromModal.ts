@@ -1,10 +1,9 @@
+import { mutate } from "swr";
 import { networkErrorMessage } from "@/constants/messages";
 import { putData } from "@/lib/putData";
 import { DataType } from "@/types/types";
-import { useRouter } from "next/navigation";
 
 export const useUpdateDataFromModal = () => {
-  const router = useRouter();
   const updateItem = async (
     fetchPath: string,
     data: DataType,
@@ -18,7 +17,7 @@ export const useUpdateDataFromModal = () => {
         alert(resData.message);
       }
       reset();
-      router.refresh();
+      mutate(`${process.env.NEXT_PUBLIC_API_URL}${fetchPath}`);
       handleOpen();
     } catch {
       alert(networkErrorMessage);

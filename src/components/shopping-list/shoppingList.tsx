@@ -1,23 +1,35 @@
-import { ShoppingListType } from "@/types/types";
+"use client";
+import useSWR, { mutate } from "swr";
 import { List, Li } from "../ui/list";
 import RemoveFromListButton from "./removeFromListButton";
 import Paragraph from "../ui/paragraph";
 import Button from "../ui/button";
+import { ShoppingListType } from "@/types/types";
 
 interface ShoppingListProps {
   userId: string;
   fridgeId: string;
-  shoppingList: ShoppingListType[];
+  shoppingLists: ShoppingListType[];
 }
 
-const ShoppingList = async ({
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+const ShoppingList = ({
   userId,
   fridgeId,
-  shoppingList,
+  shoppingLists,
 }: ShoppingListProps) => {
+  const { data = shoppingLists } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/shopping-list`,
+    fetcher,
+    {
+      fallbackData: shoppingLists,
+      revalidateOnMount: false,
+    }
+  );
   return (
     <>
-      {shoppingList.length === 0 ? (
+      {data.length === 0 ? (
         <Paragraph>
           <Button
             variant="add"
@@ -29,7 +41,7 @@ const ShoppingList = async ({
         </Paragraph>
       ) : (
         <List space="none" className="leading-[1.1] -mt-2.5">
-          {shoppingList.map((item, idx) => (
+          {data.map((item: ShoppingListType, idx: number) => (
             <Li key={idx} className="relative pr-10 pt-2.5">
               ・{item.name}
               {item.amount && (
@@ -57,6 +69,7 @@ const ShoppingList = async ({
                 <RemoveFromListButton
                   fridgeId={fridgeId}
                   listItem={item}
+                  mutateFnc={mutate}
                 />
               )}
             </Li>

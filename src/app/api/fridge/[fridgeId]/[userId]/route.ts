@@ -4,10 +4,9 @@ import { serverErrorMessage } from "@/constants/apiMessages";
 
 export async function DELETE(req: Request) {
   try {
-    const ids = req.url.split("fridge/")[1].split("/account/");
+    const ids = req.url.split("fridge/")[1].split("/");
     const fridgeId = ids[0];
     const userId = ids[1];
-    console.log("ids", ids);
     await prisma.userFridge.delete({
       where: {
         userId_fridgeId: {

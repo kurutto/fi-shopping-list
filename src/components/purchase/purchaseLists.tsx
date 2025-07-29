@@ -1,19 +1,16 @@
-import { PurchasesUserType, PurchaseType } from "@/types/types";
-import React from "react";
-import Heading from "../ui/heading";
 import PurchaseList from "./purchaseList";
+import Heading from "../ui/heading";
+import { PurchaseType } from "@/types/types";
 
 interface PurchaseListsProps {
   userId: string;
   fridgeId: string;
   purchases: PurchaseType[];
-  users: PurchasesUserType[];
 }
-const PurchaseLists = ({
+const PurchaseLists = async ({
   userId,
   fridgeId,
   purchases,
-  users,
 }: PurchaseListsProps) => {
   //購入履歴の中から日付を取り出す
   const dates: Date[] = [];
@@ -44,9 +41,8 @@ const PurchaseLists = ({
             userId={userId}
             fridgeId={fridgeId}
             date={new Date(date)}
-            purchases={purchases}
-            users={users}
             headingStyle="text-left"
+            purchases={purchases}
           />
         </div>
       ))}

@@ -149,8 +149,8 @@ const InventoryTable = ({
           </Swiper>
           <div className="flex justify-center gap-2 md:mt-4 max-md:mt-2">
             {
-              [...Array(pages)].map((_,idx) => (
-                <span key={idx} className={cn("p-2 bg-secondary rounded-full",idx===current && "bg-light-gray")}></span>
+              [...Array(pages)].map((_,idx:number) => (
+                <span key={idx} className={cn("bg-secondary rounded-full md:p-2 max-md:p-1.5",idx===current && "bg-light-gray")}></span>
                 )
               )
             }

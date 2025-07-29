@@ -1,11 +1,11 @@
+import { mutate } from "swr";
 import { deleteData } from "@/lib/deleteData";
-import { useRouter } from "next/navigation";
 
 export const useDeleteDataFromModal = () => {
-  const router = useRouter();
   const deleteItem = async (fetchPath: string, handleOpen: () => void) => {
+    const trimmedPath = fetchPath.substring(0, fetchPath.lastIndexOf("/"));
     deleteData(fetchPath);
-    router.refresh();
+    mutate(`${process.env.NEXT_PUBLIC_API_URL}${trimmedPath}`);
     handleOpen();
   };
   return { deleteItem };
