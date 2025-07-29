@@ -1,4 +1,5 @@
 "use client";
+import type { mutate } from "swr";
 import Button from "../ui/button";
 import DeleteConfirm from "../confirm/deleteConfirm";
 import { useSession } from "next-auth/react";
@@ -8,11 +9,13 @@ import { useDeleteDataFromRemoveButton } from "@/hooks/useDeleteDataFromRemoveBu
 interface RemoveFromListButtonProps {
   fridgeId: string;
   listItem: ShoppingListType;
+  mutateFnc: typeof mutate;
 }
 
 const RemoveFromListButton = ({
   fridgeId,
   listItem,
+  mutateFnc,
 }: RemoveFromListButtonProps) => {
   const { data: session } = useSession();
   const { isOpen, handleOpen, deleteItem } = useDeleteDataFromRemoveButton();
@@ -20,6 +23,9 @@ const RemoveFromListButton = ({
     await deleteItem(
       `/fridge/${fridgeId}/shopping-list/${listItem.id}`,
       nextTimeHideConfirm
+    );
+    mutateFnc(
+      `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/shopping-list`
     );
   };
   return (

@@ -1,30 +1,42 @@
+"use client";
+import useSWR from "swr";
 import { PurchasesUserType, PurchaseType } from "@/types/types";
 import { List, Li } from "../ui/list";
 import Heading from "../ui/heading";
 import RemovePurchaseButton from "./removePurchaseButton";
 import Paragraph from "../ui/paragraph";
 import Button from "../ui/button";
+import { getPurchasesUsers } from "@/lib/purchase";
 
 interface PurchaseListProps {
   userId: string;
   fridgeId: string;
   date: Date;
-  purchases: PurchaseType[];
-  users: PurchasesUserType[];
   headingStyle: string;
+  purchases: PurchaseType[];
 }
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const PurchaseList = ({
   userId,
   fridgeId,
   date,
-  purchases,
-  users,
   headingStyle,
+  purchases,
 }: PurchaseListProps) => {
+  const { data = purchases } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase`,
+    fetcher,
+    {
+      fallbackData: purchases,
+      revalidateOnMount: false,
+    }
+  );
   const today = new Date();
-  const datePurchases = purchases.filter(
-    (purchase) =>
+  const users: PurchasesUserType[] = getPurchasesUsers(data);
+  const datePurchases = data.filter(
+    (purchase: PurchaseType) =>
       new Date(purchase.purchaseDate).toLocaleDateString() ===
       date.toLocaleDateString()
   );
@@ -45,7 +57,7 @@ const PurchaseList = ({
       ) : (
         users.map((user) =>
           datePurchases.some(
-            (datePurchase) => datePurchase.userId === user.id
+            (datePurchase: PurchaseType) => datePurchase.userId === user.id
           ) ? (
             <div key={user.id}>
               <Heading level={4} className={headingStyle}>
@@ -53,7 +65,7 @@ const PurchaseList = ({
               </Heading>
               <List className="mt-2.5">
                 {datePurchases.map(
-                  (purchase) =>
+                  (purchase: PurchaseType) =>
                     purchase.userId === user.id && (
                       <Li key={purchase.id} className="relative pr-4 pt-3">
                         ・{purchase.name}

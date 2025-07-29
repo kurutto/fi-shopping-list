@@ -46,7 +46,7 @@ export async function PUT(req: Request) {
 }
 export async function GET(req: Request) {
   try {
-    const fridgeId = await req.url.split("fridge/")[1].replace("/account", "");
+    const fridgeId = await req.url.split("fridge/")[1];
     const fridgeAccount = await prisma.fridge.findUnique({
       where: { id: fridgeId },
       include: {

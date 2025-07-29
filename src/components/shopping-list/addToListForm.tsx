@@ -8,7 +8,7 @@ import Input from "../ui/input";
 import Label from "../ui/label";
 import Paragraph from "../ui/paragraph";
 import { useCreateDataFromModal } from "@/hooks/useCreateDataFromModal";
-import { useContext, useState } from "react";
+import { RefObject, useContext, useState } from "react";
 import { ModalContext, ModalContextType } from "@/context/modalContext";
 
 const formSchema = z.object({

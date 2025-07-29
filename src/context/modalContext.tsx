@@ -1,6 +1,7 @@
 "use client";
+import type { mutate } from 'swr'
 import { InventoryType, PurchaseItemDataType } from "@/types/types";
-import { createContext, useState } from "react";
+import { createContext, RefObject, useRef, useState } from "react";
 
 export interface ModalContextType {
   item?: number | null;
@@ -10,9 +11,11 @@ export interface ModalContextType {
   handleItemOpen: (
     itemNumber: number,
     inventory?: InventoryType,
-    purchases?: PurchaseItemDataType[]
+    purchases?: PurchaseItemDataType[],
+    mutateFunc?:typeof mutate,
   ) => void;
   handleOpen: () => void;
+  mutateRef:RefObject<(typeof mutate | undefined) | undefined>;
 }
 
 export const ModalContext = createContext<ModalContextType>({
@@ -21,6 +24,7 @@ export const ModalContext = createContext<ModalContextType>({
   inventory: null,
   handleItemOpen: () => {},
   handleOpen: () => {},
+  mutateRef:{ current: undefined }
 });
 
 export const ModalContextProvider = ({
@@ -32,12 +36,15 @@ export const ModalContextProvider = ({
   const [isOpen, setIsOpen] = useState(false);
   const [inventory, setInventory] = useState<InventoryType | null>(null);
   const [purchases, setPurchases] = useState<PurchaseItemDataType[] | null>(null);
+  const mutateRef = useRef<(typeof mutate | undefined) | undefined>(undefined);
   const handleItemOpen = (
     itemNumber: number,
     inventoryItem?: InventoryType | null,
-    purchasesItems?: PurchaseItemDataType[] | null
+    purchasesItems?: PurchaseItemDataType[] | null,
+    mutateFunc?:typeof mutate,
   ) => {
     setItem(itemNumber);
+    mutateRef.current= mutateFunc;
     if (inventoryItem) {
       setInventory(inventoryItem);
     }
@@ -64,6 +71,7 @@ export const ModalContextProvider = ({
         purchases,
         handleItemOpen,
         handleOpen,
+        mutateRef
       }}
     >
       {children}

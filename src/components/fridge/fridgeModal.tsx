@@ -19,10 +19,26 @@ const FridgeModal = ({ userId, fridgeId }: FridgeModal) => {
   return (
     <Modal isOpen={isOpen} handleOpen={handleOpen} boxW="w-lg">
       {item === 0 && <AddToListForm userId={userId} fridgeId={fridgeId} />}
-      {item === 1 && <InventoryForm fridgeId={fridgeId} inventory={inventory} />}
-      {item === 2 && <PurchaseRegistration userId={userId} fridgeId={fridgeId} />}
-      {item === 3 && purchases && <PurchaseFromReceipt userId={userId} fridgeId={fridgeId} purchases={purchases} />}
-      {item === 4 && purchases && <PurchaseFromProduct userId={userId} fridgeId={fridgeId} purchases={purchases} />}
+      {item === 1 && (
+        <InventoryForm fridgeId={fridgeId} inventory={inventory} />
+      )}
+      {item === 2 && (
+        <PurchaseRegistration userId={userId} fridgeId={fridgeId} />
+      )}
+      {item === 3 && purchases && (
+        <PurchaseFromReceipt
+          userId={userId}
+          fridgeId={fridgeId}
+          purchases={purchases}
+        />
+      )}
+      {item === 4 && purchases && (
+        <PurchaseFromProduct
+          userId={userId}
+          fridgeId={fridgeId}
+          purchases={purchases}
+        />
+      )}
     </Modal>
   );
 };

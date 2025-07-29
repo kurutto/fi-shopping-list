@@ -1,4 +1,5 @@
 "use client";
+import { mutate } from "swr";
 import Button from "../ui/button";
 import { useSession } from "next-auth/react";
 import DeleteConfirm from "../confirm/deleteConfirm";
@@ -21,6 +22,7 @@ const RemovePurchaseButton = ({
       `/fridge/${fridgeId}/purchase/${purchase.id}`,
       nextTimeHideConfirm
     );
+    mutate(`${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase`);
   };
   return (
     <>

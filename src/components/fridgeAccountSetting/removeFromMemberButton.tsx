@@ -17,7 +17,7 @@ const RemoveFromMemberListButton = ({
   const { deleteItem } = useDeleteDataFromModal();
   const { isOpen, handleOpen } = useHandleOpen();
   const handleDelete = async () => {
-    await deleteItem(`/fridge/${fridgeId}/account/${user.userId}`, handleOpen);
+    await deleteItem(`/fridge/${fridgeId}/${user.userId}`, handleOpen);
   };
   return (
     <>

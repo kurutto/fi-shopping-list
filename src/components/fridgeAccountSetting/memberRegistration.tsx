@@ -1,4 +1,5 @@
 "use client";
+import { mutate } from "swr";
 import { useRef, useState } from "react";
 import { UserType } from "@/types/types";
 import Paragraph from "../ui/paragraph";
@@ -32,7 +33,7 @@ const MemberRegistration = ({ fridgeId }: UserRegistrationProps) => {
       });
       setUser(undefined);
       inputId.current!.value = "";
-      router.refresh();
+      mutate(`${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}`);
     } catch {
       alert(networkErrorMessage);
     }
