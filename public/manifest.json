@@ -4,7 +4,7 @@
   "description": "在庫管理もできる買物リストアプリです",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fafafa",
+  "background_color": "#1266d5",
   "theme_color": "#1266d5",
   "icons": [
     {
