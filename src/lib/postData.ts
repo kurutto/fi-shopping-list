@@ -9,7 +9,6 @@ export const postData = async(fetchPath:string,data:DataType) => {
     }
   );
   if (!res.ok) {
-    const errData = await res.json();
-    alert(errData.message);
+    throw new Error(`Failed to fetch data: ${res.status}`);
   } 
 }

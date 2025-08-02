@@ -7,7 +7,7 @@ export const getFridgeAccount = async (
     `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}`
   );
   if (!res.ok) {
-    throw new Error("Failed to fetch fridge accounts");
+    throw new Error(`Failed to fetch fridge accounts: ${res.status}`);
   }
   return await res.json();
 };

@@ -3,7 +3,7 @@ export const deleteData = async (fetchPath: string) => {
     method: "DELETE",
   });
   const data = await res.json();
-  if(!res.ok){
-    alert(data.message);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch data: ${res.status}`);
   }
 };
