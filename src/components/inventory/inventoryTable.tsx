@@ -28,7 +28,6 @@ const InventoryTable = ({
   className,
   ...props
 }: InventoryTableProps) => {
-
   const tableRef = useRef<HTMLTableElement>(null);
   const [current, setCurrent] = useState(0);
   const [tableHeight, setTableHeight] = useState(0);
@@ -42,20 +41,20 @@ const InventoryTable = ({
   } = useHandleSort(inventories);
 
   const pages = Math.floor(
-      inventories.length % 5 === 0
-        ? inventories.length / 5
-        : inventories.length / 5 + 1
-    );
+    inventories.length % 5 === 0
+      ? inventories.length / 5
+      : inventories.length / 5 + 1
+  );
 
   useEffect(() => {
-    if(tableRef.current){
-    setTableHeight(tableRef.current.offsetHeight);
+    if (tableRef.current) {
+      setTableHeight(tableRef.current.offsetHeight);
     }
-  },[]);
+  }, []);
 
   const handleSwipeLeft = () => {
     if (pages != 1) {
-      setCurrent((prev) => (prev === pages - 1 ? 0 : prev + 1));
+      setCurrent((prev) => (prev === pages - 1 ? 0 : prev - 1));
     }
   };
   const handleSwipeRight = () => {
@@ -81,8 +80,12 @@ const InventoryTable = ({
       ) : (
         <>
           <Swiper className="" onTouchEnd={handleTouchEnd}>
-            <SwiperSlide style={{minHeight:tableHeight}}>
-              <Table className={cn(baseStyle, className)} {...props} ref={tableRef}>
+            <SwiperSlide style={{ minHeight: tableHeight }}>
+              <Table
+                className={cn(baseStyle, className)}
+                {...props}
+                ref={tableRef}
+              >
                 <TableHead>
                   <TableRow>
                     <TableHeader className="text-left">
@@ -148,16 +151,20 @@ const InventoryTable = ({
             </SwiperSlide>
           </Swiper>
           <div className="flex justify-center gap-2 md:mt-4 max-md:mt-2">
-            {
-              [...Array(pages)].map((_,idx:number) => (
-                <span key={idx} className={cn("bg-secondary rounded-full md:p-2 max-md:p-1.5",idx===current && "bg-light-gray")}></span>
-                )
-              )
-            }
+            {[...Array(pages)].map((_, idx: number) => (
+              <span
+                key={idx}
+                className={cn(
+                  "bg-secondary rounded-full md:p-2 max-md:p-1.5",
+                  idx === current && "bg-light-gray"
+                )}
+              ></span>
+            ))}
           </div>
         </>
       )}
     </>
-  )}
+  );
+};
 
 export default InventoryTable;

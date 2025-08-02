@@ -5,7 +5,7 @@ export const getShoppingList = async ( fridgeId:string ): Promise<ShoppingListTy
     `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/shopping-list`
   );
   if (!res.ok) {
-    throw new Error("Failed to fetch shopping list");
+    throw new Error(`Failed to fetch shopping list: ${res.status}`);
   }
   return await res.json();
 }
