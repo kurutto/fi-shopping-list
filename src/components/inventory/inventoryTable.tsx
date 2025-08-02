@@ -54,12 +54,12 @@ const InventoryTable = ({
 
   const handleSwipeLeft = () => {
     if (pages != 1) {
-      setCurrent((prev) => (prev === pages - 1 ? 0 : prev - 1));
+      setCurrent((prev) => (prev === 0 ? pages - 1 : prev - 1));
     }
   };
   const handleSwipeRight = () => {
     if (pages != 1) {
-      setCurrent((prev) => (prev === 0 ? pages - 1 : prev - 1));
+      setCurrent((prev) => (prev === pages - 1 ? 0 : prev + 1));
     }
   };
 
