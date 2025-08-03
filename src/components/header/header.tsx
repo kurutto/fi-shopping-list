@@ -8,10 +8,12 @@ import HeaderFridgeAccount from "./headerFridgeAccount";
 import { getUser } from "@/lib/user";
 import { UserType } from "@/types/types";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState<UserType>();
+  const pathname = usePathname();
   useEffect(() => {
     const fetchUserData = async () => {
       const user = session ? await getUser(session.user.id) : undefined;
@@ -34,7 +36,7 @@ const Header = () => {
       <div className="flex items-center lg:gap-7 md:gap-6 max-md:gap-3">
         {fridgeId && fridgeName ? (
           <>
-            <Menu fridgeId={fridgeId} />
+            {pathname != "/contact" && <Menu fridgeId={fridgeId} />}
             <HeaderFridgeAccount fridgeId={fridgeId} fridgeName={fridgeName} />
           </>
         ) : null}
