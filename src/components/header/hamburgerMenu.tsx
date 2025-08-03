@@ -114,9 +114,14 @@ const HamburgerMenu = ({ user, session }: HamburgerMenu) => {
                 </HamburgerMenuItem>
               </>
             )}
+            <HamburgerMenuItem href="/contact" onClick={() => handleOpen()}>
+              お問い合わせ
+            </HamburgerMenuItem>
           </ul>
         </div>
-        <Paragraph color="gray" className="text-center text-xs p-2">&copy; 2025 FI買物リスト</Paragraph>
+        <Paragraph color="gray" className="text-center text-xs p-2">
+          &copy; 2025 FI買物リスト
+        </Paragraph>
       </div>
     </>
   );

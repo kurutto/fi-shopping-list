@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export const useCreateDataFromModal = () => {
-  // const router = useRouter();
   const [isAdded, setIsAdded] = useState("");
   const pathname = usePathname();
   const createItem = async (
