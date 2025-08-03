@@ -18,9 +18,14 @@ const formSchema = z.object({
     .string()
     .transform((value) => value.trim())
     .refine((value) => value.length > 0, { message: "必須項目です" }),
-  email: z.string().min(1,{message:"必須項目です"}).email("メールアドレスの形式で入力してください"),
-  category: z.string().min(1,{message:"必須項目です"}),
-  detail: z.string().transform((value) => value.trim())
+  email: z
+    .string()
+    .min(1, { message: "必須項目です" })
+    .email("メールアドレスの形式で入力してください"),
+  category: z.string().min(1, { message: "必須項目です" }),
+  detail: z
+    .string()
+    .transform((value) => value.trim())
     .refine((value) => value.length > 0, { message: "必須項目です" }),
 });
 
@@ -31,12 +36,9 @@ const ContactForm = () => {
   const router = useRouter();
   const {
     register,
-    getValues,
-    setValue,
     handleSubmit,
     reset,
     formState: { errors },
-    control,
   } = useForm<formType>({
     resolver: zodResolver(formSchema),
   });
