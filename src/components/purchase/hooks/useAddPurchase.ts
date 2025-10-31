@@ -5,6 +5,7 @@ import { putData } from "@/lib/putData";
 import { networkErrorMessage } from "@/constants/messages";
 import { postData } from "@/lib/postData";
 import { createId } from "@paralleldrive/cuid2";
+import { mutate } from "swr";
 
 export const useAddPurchase = (fridgeId: string) => {
   const [inventories, setInventories] = useState<InventoryType[]>([]);
@@ -23,7 +24,7 @@ export const useAddPurchase = (fridgeId: string) => {
     userId: string,
     kana?: string
   ) => {
-    //新規に在庫管理品を登録する
+    //新規に在庫管理品を登録する場合
     const inventoryId = createId();
     if (inventoryCheck && values.inventoryName) {
       try {
@@ -35,11 +36,14 @@ export const useAddPurchase = (fridgeId: string) => {
           kana: kana,
           amount: values.amount,
         });
+        mutate(
+          `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/inventory`
+        );
       } catch {
         alert(networkErrorMessage);
       }
-      //選択された在庫管理品の数量を取得、入力値をプラスして合計を算出する
     } else if (
+      //既存の在庫管理品に追加する場合
       inventoryCheck &&
       !values.inventoryName &&
       inventories.length > 0
@@ -47,6 +51,8 @@ export const useAddPurchase = (fridgeId: string) => {
       const targetInventory = inventories.filter(
         (inventory) => inventory.id === values.inventoryId
       );
+
+      //選択された在庫管理品の数量を取得、入力値をプラスして合計を算出する
       const amount =
         targetInventory && targetInventory[0]?.remaining + values.amount;
 
@@ -57,6 +63,9 @@ export const useAddPurchase = (fridgeId: string) => {
           inventoryId: values.inventoryId,
           amount: amount,
         });
+        mutate(
+          `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/inventory`
+        );
       } catch {
         alert(networkErrorMessage);
       }
@@ -77,6 +86,7 @@ export const useAddPurchase = (fridgeId: string) => {
         category: Number(values.category),
         date: new Date(values.date),
       });
+      mutate(`${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase`);
     } catch {
       alert(networkErrorMessage);
     }
