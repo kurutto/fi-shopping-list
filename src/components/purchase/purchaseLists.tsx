@@ -1,3 +1,5 @@
+"use client";
+import useSWR from "swr";
 import PurchaseList from "./purchaseList";
 import Heading from "../ui/heading";
 import { PurchaseType } from "@/types/types";
@@ -7,14 +9,20 @@ interface PurchaseListsProps {
   fridgeId: string;
   purchases: PurchaseType[];
 }
-const PurchaseLists = async ({
-  userId,
-  fridgeId,
-  purchases,
-}: PurchaseListsProps) => {
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+const PurchaseLists = ({ userId, fridgeId, purchases }: PurchaseListsProps) => {
+  const { data = purchases } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/fridge/${fridgeId}/purchase`,
+    fetcher,
+    {
+      fallbackData: purchases,
+      revalidateOnMount: false,
+    }
+  );
   //購入履歴の中から日付を取り出す
   const dates: Date[] = [];
-  purchases.forEach((purchase) => {
+  data.forEach((purchase: PurchaseType) => {
     if (!dates.some((date) => date === purchase.purchaseDate)) {
       dates.push(purchase.purchaseDate);
     }
