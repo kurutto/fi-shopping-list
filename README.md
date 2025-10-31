@@ -5,7 +5,7 @@
 
 ## デモ
 
-https://fi-shopping-list.vercel.app  
+[https://fi-shopping-list.vercel.app](https://fi-shopping-list.vercel.app){:target="_blank" rel="noopener noreferrer"}
 ID:demoUser01  
 password:demopassword
 
@@ -61,7 +61,8 @@ password:demopassword
 
 ## 構成・デザイン
 
-https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1
+[Figma FI買物リストv1](https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1){:target="_blank" rel="noopener noreferrer"}
+
 
 ## ER 図
 
