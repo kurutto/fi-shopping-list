@@ -80,6 +80,7 @@ const PurchaseForm = ({ userId, fridgeId, purchases }: PurchaseFormProps) => {
   const handleRegisterItem = async () => {
     const { hasErr } = await registerItemValidation();
     let kana;
+    //品名のふりがなを取得
     if (newNameRef.current?.value) {
       kana = await getKana(fridgeId, newNameRef.current.value);
     }
