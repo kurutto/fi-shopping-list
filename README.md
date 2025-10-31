@@ -5,7 +5,7 @@
 
 ## デモ
 
-[https://fi-shopping-list.vercel.app](https://fi-shopping-list.vercel.app){:target="_blank" rel="noopener noreferrer"}
+<a href="https://fi-shopping-list.vercel.app" target="_blank" rel="noopener noreferrer">https://fi-shopping-list.vercel.app</a>
 ID:demoUser01  
 password:demopassword
 
@@ -31,7 +31,7 @@ password:demopassword
 
 ### 3.冷蔵庫アカウントのトップページから操作
 
-<div style="margin-top:20px;margin-bottom:20px;"><img src="images/top.png" width="300" /></div>  
+<div style="margin-top:20px;margin-bottom:20px;"><img src="images/top.png" width="300" /></div>
 
 #### 冷蔵庫アカウントごとのトップページで、以下の操作を行えます：
 
@@ -39,8 +39,8 @@ password:demopassword
    <div style="margin-top: 10px;"><img src="images/shoppinglist.png" width="300" /></div>
 - ##### 「在庫管理」の登録・編集・削除
    <div style="margin-top: 10px;"><img src="images/inventory.png" width="300" /></div>
-- ##### 「購入品」の登録・削除  
-   購入品の登録はレシート画像/商品画像読み取りもしくはフォーム入力で行います。
+- ##### 「購入品」の登録・削除
+  購入品の登録はレシート画像/商品画像読み取りもしくはフォーム入力で行います。
    <div style="margin-top: 10px;"><img src="images/purchase.png" width="300" /></div>
 
 ### 4.冷蔵庫アカウントの管理
@@ -58,11 +58,9 @@ password:demopassword
 
 <div style="margin-top: 10px;"><img src="images/mypage.png" width="300" /></div>
 
-
 ## 構成・デザイン
 
-[Figma FI買物リストv1](https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1){:target="_blank" rel="noopener noreferrer"}
-
+<a href="https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1"target="_blank" rel="noopener noreferrer">Figma FI 買物リスト v1</a>
 
 ## ER 図
 
