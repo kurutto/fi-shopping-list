@@ -5,7 +5,7 @@
 
 ## デモ
 
-<a href="https://fi-shopping-list.vercel.app" target="_blank">https://fi-shopping-list.vercel.app</a>  
+![https://fi-shopping-list.vercel.app](https://fi-shopping-list.vercel.app)  
 ID:demoUser01  
 password:demopassword
 
@@ -59,8 +59,7 @@ password:demopassword
 <div style="margin-top: 10px;"><img src="images/mypage.png" width="300" /></div>
 
 ## 構成・デザイン
-
-<a href="https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1" target="_blank" rel="noopener noreferrer">Figma FI 買物リスト v1</a>
+![Figma FI 買物リスト v1](https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1)
 
 ## ER 図
 
