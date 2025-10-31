@@ -60,7 +60,7 @@ password:demopassword
 
 ## 構成・デザイン
 
-<a href="https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1"target="_blank" rel="noopener noreferrer">Figma FI 買物リスト v1</a>
+<a href="https://www.figma.com/design/cuPqO3vASUV9tXxA2tcgJo/FI%E8%B2%B7%E7%89%A9%E3%83%AA%E3%82%B9%E3%83%88-v1" target="_blank" rel="noopener noreferrer">Figma FI 買物リスト v1</a>
 
 ## ER 図
 
