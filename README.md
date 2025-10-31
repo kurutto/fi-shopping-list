@@ -5,7 +5,7 @@
 
 ## デモ
 
-<a href="https://fi-shopping-list.vercel.app" target="_blank" rel="noopener noreferrer">https://fi-shopping-list.vercel.app</a>  
+<a href="https://fi-shopping-list.vercel.app" target="_blank">https://fi-shopping-list.vercel.app</a>  
 ID:demoUser01  
 password:demopassword
 
