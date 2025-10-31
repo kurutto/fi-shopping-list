@@ -50,7 +50,7 @@ const PurchaseLists = ({ userId, fridgeId, purchases }: PurchaseListsProps) => {
             fridgeId={fridgeId}
             date={new Date(date)}
             headingStyle="text-left"
-            purchases={purchases}
+            purchases={data}
           />
         </div>
       ))}
