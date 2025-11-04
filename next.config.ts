@@ -24,8 +24,8 @@ const securityHeaders = [
     value: `
     default-src 'self';
     script-src 'self' ${
-      process.env.NODE_ENV === "development" ? "'unsafe-eval' 'unsafe-inline'" : ""
-    }  https://accounts.google.com https://apis.google.com https://oauth2.googleapis.com https://www.googleapis.com;
+      process.env.NODE_ENV === "development" ? "'unsafe-eval'" : ""
+    } 'unsafe-inline' https://accounts.google.com https://apis.google.com https://oauth2.googleapis.com https://www.googleapis.com;
     style-src 'self' 'unsafe-inline';
     font-src 'self';
     img-src 'self' blob: data:;
