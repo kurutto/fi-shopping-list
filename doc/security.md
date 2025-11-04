@@ -19,12 +19,6 @@
 - トークンは短期間で更新され、HTTP-only Cookie に保存されるため安全。
 - 別オリジンからのリクエストは CSRF トークン検証で自動的に拒否されます。
 
-### middleware が不要な理由
-
-- NextAuth が CSRF・セッション管理を全て行うため、  
-  **独自 CSRF チェックや middleware による Origin/Referer 検証は不要**。
-- 認証が必要な API ルートでは `getServerSession()` / `getToken()` を使うだけで十分。
-
 ---
 
 ## 2. 入力バリデーション（React Hook Form + Zod）
@@ -91,7 +85,7 @@ default-src 'self';
 | `base-uri 'self'`                                                                                                                | 自オリジンのみ                         | <base> タグの悪用によるリンク改ざんを防止               |
 | `frame-ancestors 'none'`                                                                                                         | iframe 不可                            | クリックジャッキング防止                                |
 
-### 備考（重要）
+### 備考
 
 - OpenAI SDK は **サーバーサイドでのみ使用** しているため、  
   `connect-src https://api.openai.com;` は **不要**。
@@ -100,11 +94,11 @@ default-src 'self';
 
 ## 5. まとめ
 
-| 項目                 | 実装状況                   | 説明                  |
-| -------------------- | -------------------------- | --------------------- |
-| 認証・CSRF           | ✅ NextAuth による自動処理 | middleware 不要       |
-| 入力検証             | ✅ RHF + Zod               | 改ざんリクエスト防止  |
-| XSS 対策             | ✅ CSP + `nosniff` + Zod   | スクリプト注入防止    |
-| クリックジャッキング | ✅ `X-Frame-Options: DENY` | iframe 埋め込み禁止   |
-| HTTPS 強制           | ✅ HSTS                    | セキュア通信を固定    |
-| 外部通信制御         | ✅ `connect-src 'self'`    | OpenAI はサーバー経由 |
+| 項目                 | 実装状況                | 説明                  |
+| -------------------- | ----------------------- | --------------------- |
+| 認証・CSRF           | NextAuth による自動処理 | middleware 不要       |
+| 入力検証             | RHF + Zod               | 改ざんリクエスト防止  |
+| XSS 対策             | CSP + `nosniff` + Zod   | スクリプト注入防止    |
+| クリックジャッキング | `X-Frame-Options: DENY` | iframe 埋め込み禁止   |
+| HTTPS 強制           | HSTS                    | セキュア通信を固定    |
+| 外部通信制御         | `connect-src 'self'`    | OpenAI はサーバー経由 |
